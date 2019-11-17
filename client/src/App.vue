@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+	   <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+   
+    <!-- <img src="./assets/logo.png"> -->
     <router-view/>
   </div>
 </template>

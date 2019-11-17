@@ -1,0 +1,22 @@
+/*global css style*/
+a {
+  text-decoration:none;
+
+}
+.left {
+  float:left;
+}
+.right {
+  float:right;
+}
+
+li{
+	list-style-type: none;
+}
+.shadow{
+      border-bottom: 1px solid #B3C0D1;
+
+      margin-bottom: 10px;
+      margin-top:3px;
+      box-shadow:4px 4px 5px #999;
+    }

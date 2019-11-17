@@ -15,12 +15,12 @@ exports.assetsPath = function (_path) {
 exports.cssLoaders = function (options) {
   options = options || {}
 
-  const cssLoader = {
-    loader: 'css-loader',
-    options: {
-      sourceMap: options.sourceMap
-    }
-  }
+  // const cssLoader = {
+  //   loader: 'css-loader',
+  //   options: {
+  //     sourceMap: options.sourceMap
+  //   }
+  // }
 
   const postcssLoader = {
     loader: 'postcss-loader',
@@ -29,10 +29,37 @@ exports.cssLoaders = function (options) {
     }
   }
 
-  // generate loader string to be used with extract text plugin
-  function generateLoaders (loader, loaderOptions) {
-    const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
+  // // generate loader string to be used with extract text plugin
+  // function generateLoaders (loader, loaderOptions) {
+  //   const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
 
+  //   if (loader) {
+  //     loaders.push({
+  //       loader: loader + '-loader',
+  //       options: Object.assign({}, loaderOptions, {
+  //         sourceMap: options.sourceMap
+  //       })
+  //     })
+  //   }
+
+//2.2修改build/utils.js, 在cssLoader变量中
+
+const cssLoader = {
+    loader: 'css-loader',
+    options: {
+      sourceMap: options.sourceMap,
+      importLoader: 5 // 在加载cssLoader之前加载的loader个数
+    }
+  }
+  const px2remLoader = {
+    loader: 'px2rem-loader',
+    options: {
+      emUnit: 75 // 设计稿的1/10
+    }
+  }
+  // 在后面的函数中
+  function generateLoaders(loader, loaderOptions) {
+    const loaders = options.usePostCSS ? [cssLoader, postcssLoader, px2remLoader] : [cssLoader, px2remLoader]
     if (loader) {
       loaders.push({
         loader: loader + '-loader',
