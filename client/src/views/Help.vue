@@ -1,53 +1,71 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="24" >
-        <el-breadcrumb separator-class="el-icon-arrow-right  nav2">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/help'}">帮助中心</el-breadcrumb-item>
-        </el-breadcrumb>
-        <ul>
-          <li>
-            <router-link to="/">
-              <img class="left nav1" alt="" style="width: 10%; height: 10%" src='../../static/img/brand.png'>
-            </router-link>
 
-          </li>
-          <li>
-            <p class="left nav2">帮助中心</p>
-          </li>
-        </ul>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24">
-        <div class='shadow'></div>
-      </el-col>
-    </el-row>
-    <el-row type="flex" class="row-bg">
-      <el-col :span="12" offset="4">
-        <el-collapse v-model="activeNames" @change="handleChange">
-          <el-collapse-item title="注册" name="1">
-            <div>1.注册时，前方有“*”标记，则为必填项目，否则无法注册</div>
-            <div>2.注册前，要认真阅读注册协议，后方可注册。</div>
-          </el-collapse-item>
-          <el-collapse-item title="登录" name="2">
-            <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-            <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-          </el-collapse-item>
-          <el-collapse-item title="账户注销" name="3">
-            <div>简化流程：设计简洁直观的操作流程；</div>
-            <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-            <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-          </el-collapse-item>
-          <el-collapse-item title="其他" name="4">
-            <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-            <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
-          </el-collapse-item>
-        </el-collapse>
-      </el-col>
-    </el-row>
-    
+
+    <div class="bg">
+      <el-row>
+        <el-col :span="24">
+          <el-breadcrumb separator-class="el-icon-arrow-right  nav2">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/help'}">帮助中心</el-breadcrumb-item>
+          </el-breadcrumb>
+          <ul>
+            <li>
+              <router-link to="/">
+                <img class="left nav1" alt="" style="width: 10%; height: 10%" src='../../static/img/brand.png'>
+              </router-link>
+
+            </li>
+            <li>
+              <p class="left nav2">帮助中心</p>
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <div class='shadow'></div>
+        </el-col>
+      </el-row>
+      <el-row type="flex" class="row-bg " id="row-bg">
+        <el-col :span="12" offset="4">
+          <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse-item title="注册" name="1">
+              <div>1.注册时，前方有“*”标记，则为必填项目，否则无法注册</div>
+              <div>2.注册前，要认真阅读注册协议，后方可注册。</div>
+            </el-collapse-item>
+            <el-collapse-item title="登录" name="2">
+              <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
+              <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+            </el-collapse-item>
+            <el-collapse-item title="账户注销" name="3">
+              <div>简化流程：设计简洁直观的操作流程；</div>
+              <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
+              <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+            </el-collapse-item>
+            <el-collapse-item title="其他" name="4">
+              <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
+              <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+            </el-collapse-item>
+          </el-collapse>
+        </el-col>
+      </el-row>
+      <img @click="show" class='contact' style="widht:40px;height:40px;" src="../../static/img/contact.png" alt="">
+      <div class='box md-show'>
+        <div @click="show2()"   class='box1 left'>
+          <img class="left img1" src="../../static/img/server.png" style="width:30px;height:30px;" alt=""><span class="left t1">微信客服</span>
+        </div>
+
+
+        <div @click="show1()"  class="box2 left">
+          <img class='left img2' src="../../static/img/feedback.png" style="width:30px;height:30px;" alt="">
+          <span class="left t2">意见反馈</span>
+        </div>
+
+
+      </div>
+    </div>
+    <Modal></Modal>
     <Foot></Foot>
 
 
@@ -57,18 +75,19 @@
 
 <script>
   import Foot from '@/components/Foot'
+  import Modal from '@/components/Modal'
   export default {
     name: 'Regist',
     data() {
       return {
-         dialogFormVisible: false,
-         form: {
-                   name: ''
-                 },
-         formLabelWidth: '30%',
+        dialogFormVisible: false,
+        form: {
+          name: ''
+        },
+        formLabelWidth: '30%',
         dialogVisible: false,
         ruleForm: {
-          checked:false,
+          checked: false,
           name: '',
           region: '',
           date1: '',
@@ -83,12 +102,14 @@
           buyerEmail: ''
         },
         rules: {
-          buyerPhone: [
-                { validator: checkPhone, trigger: 'blur' }
-              ],
-              buyerEmail: [
-                { validator: checkEmail, trigger: 'blur'  }
-              ],
+          buyerPhone: [{
+            validator: checkPhone,
+            trigger: 'blur'
+          }],
+          buyerEmail: [{
+            validator: checkEmail,
+            trigger: 'blur'
+          }],
           pass: [{
             validator: validatePass,
             trigger: 'blur'
@@ -148,13 +169,26 @@
       }
     },
     methods: {
-       handleClose(done) {
-              this.$confirm('确认关闭？')
-                .then(_ => {
-                  done();
-                })
-                .catch(_ => {});
-            },
+      show1() {
+        $('#box').show()
+        $('.bg').addClass('black_over')
+        $('.row-bg').addClass('black_over')
+      },
+      show2() {
+        $('#box1').show()
+        $('.bg').addClass('black_over')
+        $('.row-bg').addClass('black_over')
+      },
+      show() {
+        $(".box").toggle()
+      },
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -169,21 +203,72 @@
         this.$refs[formName].resetFields();
       }
     },
-    components:{
-      Foot
+    components: {
+      Foot,
+      Modal
     },
-    mounted:
-      function(){
-      		//可用于设置自适应屏幕，根据获得的可视宽度（兼容性）判断是否显示
-      		let w = document.documentElement.offsetWidth || document.body.offsetWidth;
-      		if(w < 1000){
-      			this.show = false;
-      		}
+    mounted: function() {
+      //可用于设置自适应屏幕，根据获得的可视宽度（兼容性）判断是否显示
+      let w = document.documentElement.offsetWidth || document.body.offsetWidth;
+      if (w < 1000) {
+        this.show = false;
       }
+    }
   }
 </script>
 
 <style scoped>
+  .black_over {
+    background-color: gainsboro;
+    opacity: 0.7;
+
+  }
+
+  .md-show {
+    display: none;
+  }
+
+  .box {
+    width: 300px;
+    height: 150px;
+
+    box-shadow: 0 0 5px #F8F8F8;
+    position: fixed;
+    bottom: 170px;
+    right: 85px;
+  }
+
+  .box1,
+  .box2 {
+    font-size: 20px;
+    font-weight: 400;
+    height: 75px;
+    width: 300px;
+
+  }
+
+  .img1,
+  .img2 {
+    margin: 10px 10px 0 10px;
+  }
+
+  .t1,
+  .t2 {
+    line-height: 75px;
+    margin-left: 20px;
+    font-color: #000000;
+    font-weight: 600;
+  }
+
+  .box2:hover {
+    background: #F8F8F8;
+
+  }
+
+  .box1:hover {
+    background: #F8F8F8;
+  }
+
   .nav1 {
     margin-left: 5%;
 
@@ -214,7 +299,14 @@
   p {
     font-size: 0.5rem
   }
-  .row-bg{
-    height:1500px;
+
+  .row-bg {
+    height: 1500px;
+  }
+
+  .contact {
+    position: fixed;
+    bottom: 260px;
+    right: 1px;
   }
 </style>

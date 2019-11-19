@@ -3,6 +3,10 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+//添加代码1
+var webpack = require('webpack')
+
+
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -29,6 +33,17 @@ module.exports = {
       '@': resolve('src'),
     }
   },
+  
+  //添加代码2
+  plugins:[
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery:"jquery",
+      jquery:"jquery",
+      "window.jQuery":"jquery"
+    })
+  ],
+  
   module: {
     rules: [
       {

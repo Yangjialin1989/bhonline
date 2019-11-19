@@ -14,6 +14,9 @@ import 'lib-flexible/flexible.js'
 
 import './style.css'
 
+//3.添加jquery
+import 'jquery'
+
 
 //1.2ElementUI组件挂载到vue实例
 Vue.use(ElementUI)
