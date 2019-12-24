@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-	   <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-   
+	 <!-- 在 head 标签中添加 meta 标签，并设置 viewport-fit=cover 值 -->
+<!-- 在 head 标签中添加 meta 标签，并设置 viewport-fit=cover 值 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
     <!-- <img src="./assets/logo.png"> -->
     <router-view/>
   </div>

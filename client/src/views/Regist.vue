@@ -39,7 +39,8 @@
       <el-col :span="12" offset="4">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="ruleForm.name" @blur="checkName"></el-input>
+            <span class="errmessage">{{ nameMsg}}</span>
           </el-form-item>
 
           <el-form-item label="联系电话:" prop="buyerPhone" required>
@@ -56,14 +57,15 @@
           <el-form-item label="确认密码" prop="checkPass" required>
             <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item prop='checked' required>
-            <el-checkbox v-model='checked'>
+          <el-form-item prop='checked' required >
+            <el-checkbox v-model='ruleForm.checked'  :disabled="isDisabled">
               <span>
                 阅读并接受
 
               </span>
             </el-checkbox>
-            <el-button type="text" @click="dialogFormVisible = true">《注册协议》</el-button>
+            <!-- <el-button type="text" @click="dialogFormVisible = true">《注册协议》</el-button> -->
+            <el-button type="text" @click="TimerFlag">《注册协议》</el-button>
 
             <el-dialog title="《注册协议》" :visible.sync="dialogFormVisible">
               <el-form :model="form">
@@ -146,7 +148,8 @@
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible =false;checked=true">确 定</el-button>
+                <el-button type="primary" @click="ruleConfirm" :disabled="isDisabled1">{{buttonName}}</el-button>
+                 <!-- <el-button type="primary" @click=" dialogFormVisible =false;checked=true">确 定</el-button> -->
               </div>
             </el-dialog>
 
@@ -172,6 +175,7 @@
 
 <script>
   import Foot from '@/components/Foot'
+  import axios from 'axios'
   export default {
     name: 'Regist',
     data() {
@@ -228,11 +232,16 @@
               }
             };
       return {
-         dialogFormVisible: false,
-         form: {
+        nameMsg:'',
+        buttonName: "请阅读",
+        time: 10,
+        isDisabled: true,
+        isDisabled1: false,
+        dialogFormVisible: false,
+        form: {
                    name: ''
-                 },
-         formLabelWidth: '30%',
+              },
+        formLabelWidth: '30%',
         dialogVisible: false,
         ruleForm: {
           checked:false,
@@ -264,15 +273,19 @@
             validator: validatePass2,
             trigger: 'blur'
           }],
+          checked:[{
+            required:true,
+            trigger:'blur'
+          }],
           name: [{
               required: true,
               message: '请设置用户名',
               trigger: 'blur'
             },
             {
-              min: 3,
+              min: 2,
               max: 8,
-              message: '长度在 3 到 8 个字符',
+              message: '长度在2 到 8 个字符',
               trigger: 'blur'
             }
           ],
@@ -315,6 +328,40 @@
       }
     },
     methods: {
+      //注册用户，检查用户名时候存在于数据库
+      checkName(){
+        axios.post('/api/admins/checkName', {
+          userName: this.ruleForm.name
+        }).then((result) => {
+          let res = result.data
+          console.log(res.msg)
+          this.nameMsg = res.msg
+
+
+        })
+      },
+      TimerFlag(){
+        this.dialogFormVisible = true
+        let me = this;
+        me.isDisabled1 = true;
+        let interval = window.setInterval(function() {
+        	me.buttonName = '（' + me.time + '秒）后解禁';
+        	--me.time;
+        	if(me.time < 0) {
+        		me.buttonName = "已阅读";
+        		me.time = 10;
+        		me.isDisabled1 = false;
+        		window.clearInterval(interval);
+        	}
+        }, 1000);
+      },
+      ruleConfirm(){
+
+        this.dialogFormVisible =false;
+        this.isDisabled = false;
+        this.ruleForm.checked=true
+      }
+      ,
        handleClose(done) {
               this.$confirm('确认关闭？')
                 .then(_ => {
@@ -325,13 +372,59 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            var flag = this.ruleForm.checked
+            if(flag){
+
+            let data = {
+              'userId':10000,
+              'userName':this.ruleForm.name,
+              'buyerPhone':this.ruleForm.buyerPhone,
+              'buyerEmail':this.ruleForm.buyerEmail,
+              'userPwd':this.ruleForm.pass
+            }
+            axios.post('/api/admins/userRegist',data).then((result)=>{
+              let res = result.data
+              if(res.status ==0 ){
+                console.log('注册成功！')
+                this.open()
+              }else{
+                console.log('注册失败！')
+              }
+            })
+            }else{
+              this.rec()
+            }
           } else {
             console.log('error submit!!');
             return false;
           }
         })
       },
+      rec(){
+        var mymessage=confirm("请先仔细阅读《注册协议》。");
+          	if(mymessage==true)
+          	{
+          		this.TimerFlag()
+          	}
+          	else if(mymessage==false)
+          	{
+          		 this.$router.push('/regist')
+
+        }
+      },
+      open() {
+              this.$alert('恭喜您注册成功！', {
+                confirmButtonText: '确定',
+                callback: action => {
+                  this.$message({
+                    type: 'info',
+                    //message: `action: ${ action }`
+                    message:''
+                  });
+                }
+              });
+      },
+
       resetForm(formName) {
         this.$refs[formName].resetFields();
       }
@@ -355,7 +448,10 @@
     margin-left: 5%;
 
   }
-
+  .errmessage{
+    color:red;
+    backgrond:yellow;
+  }
   .nav2 {
     margin-left: 3%;
     width: 25%;

@@ -10,8 +10,8 @@
     <el-button :plain="true" @click="openVn5">官方美篇</el-button>
 
     </div>
-
-    <img v-if="btnFlag" @click="backTop" class="go-top right" style="width:30px;height:30px;" src="../../static/img/backtop.png" alt="">
+    <increment></increment>
+    <img v-if="btnFlag" @click="backTop" class="go-top right" style="width:30px;height:30px;" src="/static/img/backtop.png" alt="">
 
     <Foot></Foot>
 
@@ -22,6 +22,7 @@
   import Head from '@/components/Head'
   import Foot from '@/components/Foot'
   import BackTop from '@/components/BackTop'
+  import increment from '@/components/increment'
   export default {
     data(){
       return{
@@ -109,7 +110,8 @@
     components:{
       Head,
       Foot,
-      BackTop
+      BackTop,
+      increment
     }
   }
 </script>

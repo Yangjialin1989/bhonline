@@ -22,7 +22,10 @@ var userSchema = new Schema({
 			"tel":Number,
 			"isDefault":Boolean
 		}
-	]
+	],
+	"userPwd":String,
+	"buyerPhone":Number,
+	"buyerEmail":String
 })
 // var userSchema = new Schema({
 // 	"userId":String,

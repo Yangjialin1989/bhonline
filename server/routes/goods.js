@@ -1,8 +1,16 @@
 var express = require('express')
 var router = express.Router()
 var mongoose = require('mongoose')
+
+
+var Grid = require("gridfs-stream")
+//var gfs = Grid()
+
+
+
 var Goods = require('../models/goods')
 var Users = require('../models/users')
+var Admins = require('../models/admins')
 mongoose.connect('mongodb://localhost:27017/goods',{ useNewUrlParser:true})
 mongoose.connection.on('connected', function() {
 	console.log('mongodb connected !')
@@ -13,6 +21,39 @@ mongoose.connection.on('error', function() {
 mongoose.connection.on('disconnected', function() {
 	console.log('mongodb disconnected !')
 })
+
+router.post('/userMsg',function(req,res,next){
+	// mongoose.connect("mongodb://localhost:27017/admins",{useNewUrlParser:true},function(err){
+	// 	if(err){
+	// 		console.log("连接失败")
+	// 	}else{
+	// 		console.log("连接成功")
+	// 	}
+		
+	// })
+	const User = mongoose.model("user",{userName:String,userPwd:String,userId:String})
+	const user = new User({userName:"张三1",userPwd:'1234561',userId:'11111111'})
+	user.save().then((result)=>{
+		console.log(result)
+	}
+	,()=>{
+		
+	})
+})
+router.post('/userRegist',function(req,res,next){
+    //console.log(req.body)
+	const admins = req.body
+	const admin = new Admins(admins)
+	admin.save().then((result)=>{
+		console.log("存储数据成功!")
+		res.json({
+			status: 0,
+			result:result
+		})
+	})
+})
+
+
 
 router.get('/list', function(req, res, next) {
 	//接口编写,使用req.param('') 挂载参数

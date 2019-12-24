@@ -2,11 +2,20 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
 
 //1.1ElementUI组件
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+
+//1.2ElementUI组件挂载到vue实例
+Vue.use(ElementUI)
+
+
+import router from './router'
+
+import store from './store'
+
+
 
 //2.1lib-fexiible
 import 'lib-flexible/flexible.js'
@@ -17,9 +26,34 @@ import './style.css'
 //3.添加jquery
 import 'jquery'
 
+//4.引入vant插件
+//4.1引入
+import {Button} from 'vant'
+import { Rate } from 'vant';
+import { Sticky } from 'vant'
+import { Uploader } from 'vant';
+import { NoticeBar } from 'vant';
 
-//1.2ElementUI组件挂载到vue实例
-Vue.use(ElementUI)
+
+
+
+
+
+
+
+
+//4.2
+
+//4.3vant挂载
+Vue.use(Button)
+Vue.use(Rate);
+Vue.use(Sticky)
+Vue.use(Uploader);
+Vue.use(NoticeBar);
+
+
+
+
 
 
 Vue.config.productionTip = false
@@ -27,6 +61,7 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'
