@@ -30,7 +30,15 @@ import Login from '@/views/Login'
 import Help from '@/views/Help'
 import Map from '@/views/Map'
 import Email from '@/views/Email'
+
+
+//components 
 import BackTop from '@/components/BackTop'
+import afterSaleImage from '@/components/afterSaleImage'
+
+
+
+
 
 Vue.use(Router)
 

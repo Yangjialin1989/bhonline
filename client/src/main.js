@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-
+import FastClick from 'fastclick';
 //1.1ElementUI组件
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -33,6 +33,12 @@ import { Rate } from 'vant';
 import { Sticky } from 'vant'
 import { Uploader } from 'vant';
 import { NoticeBar } from 'vant';
+import { Skeleton } from 'vant';
+import { Sidebar, SidebarItem } from 'vant';
+import { AddressEdit } from 'vant';
+import { Overlay } from 'vant';
+import { Area } from 'vant'
+
 
 
 
@@ -50,8 +56,15 @@ Vue.use(Rate);
 Vue.use(Sticky)
 Vue.use(Uploader);
 Vue.use(NoticeBar);
+Vue.use(Skeleton);
+Vue.use(Sidebar);
+Vue.use(SidebarItem);
+Vue.use(AddressEdit);
+Vue.use(Overlay);
+Vue.use(Area)
 
-
+//移动端延时
+FastClick.attach(document.body);
 
 
 

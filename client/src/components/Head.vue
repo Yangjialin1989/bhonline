@@ -21,7 +21,7 @@
         <div class="demo-image">
           <div class="block">
 
-            <el-image style="width: 100%; height: 100%" src='/static/img/Bg-01.png'></el-image>
+            <el-image style="width: 100%; height: 100%" src="/static/img/Bg-01.png"></el-image>
           </div>
         </div>
 
@@ -111,7 +111,16 @@
     computed:{
 
     },
+    created(){
+      this.layout()
+    },
     methods: {
+      layout(){
+        var w = document.documentElement.scrollWidth;
+        if(w > 1201){
+          window.document.documentElement.style.fontSize = "75px";
+        }
+      },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
@@ -148,6 +157,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .imgbox{
+    background:url(../../../../../../Node/01/ip地址和端口号.png)
+  }
   .el-row {
     margin-bottom: 0px;
 

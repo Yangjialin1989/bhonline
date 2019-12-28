@@ -10,6 +10,7 @@
     <el-button :plain="true" @click="openVn5">官方美篇</el-button>
 
     </div>
+    
     <increment></increment>
     <img v-if="btnFlag" @click="backTop" class="go-top right" style="width:30px;height:30px;" src="/static/img/backtop.png" alt="">
 
@@ -118,7 +119,7 @@
 
 <style scoped>
   .contents{
-    height:1000px;
+    height:1000px;padding:30px;
   }
   .go-top{
     position: fixed;bottom:40px;right:30px;
