@@ -1,152 +1,102 @@
 <template>
- 
- 
-  <!-- <div>
 
-
-  <div class="contain">
-    <div class="posting-uploader">
-      <div
-        class="posting-uploader-item"
-        v-for="(item, nn) in postData"
-        :key="nn"
-      >
-        <img :src="item.content" alt="图片" class="imgPreview" />
-        <van-icon
-          name="close"
-          src="../../assets/image/icon/icon_delete@3x.png"
-          @click="delImg(nn)"
-          class="delte"
-        />
+      <div class="contain">
+        <div class="posting-uploader">
+          <h3>上传头像</h3>
+          <van-uploader  v-model="fileList" multiple :preview-size="80"  :max-size="1000000000" :max-count="1" :after-read="afterRead" />
+        </div>
+        <p  class="red">{{ upLoadMsg }}</p>
+        <p>{{ upLoadMsg1 }}</p>
       </div>
-      <van-uploader
-        :after-read="onRead"
-        :accept="'image/*'"
-        v-show=" postData.length <= 2"
-        result-type="text"
-        v-on:oversize="oversize"
-      >
-        <img
-          src="../../assets/image/icon/defaultImage@3x.png"
-          alt="等待传图"
-          class="imgPreview"
-        />
-      </van-uploader>
-    </div>
-  </div>
-  </div> -->
+
 </template>
 
 <script>
+  import axios from 'axios'
+  export default {
+    data() {
+      return {
+        upLoadMsg:'',
+        upLoadMsg1:'',
+        fileList: [
 
-export default {
-  props: {
-    UUIDStr: String,
-    imageList: Array
-  },
-  data () {
-    return {
-      postData: []
-    }
-  },
-  mounted () {
-    this.postData = this.imageList
-  },
-  watch: {
-    imageList (value) {
-      this.postData = value
-    }
-  },
-  methods: {
+        ],
 
-    delImg (index) {
-      // 删除指定下标的图片对象
-      if (isNaN(index) || index >= this.postData.length) {
-        return false
+        imgData:this.$store.state.headerImgData
       }
-      // let param = {
-      //   id: this.postData[index].id
-      // }
-      this.$api.deleteFile(this.postData[index].id).then(res => {
-        if (res.code === 0) {
-          this.postData.splice(index, 1)
-          this.$emit('imageListChange', this.postData)
-        }
-      })
-      // let tmp = []
-      // for (let i = 0, len = this.postData.length; i < len; i++) {
-      //   if (this.postData[i] !== this.postData[index]) {
-      //     tmp.push(this.postData[i])
-      //   }
-      // }
-      // this.postData = tmp
     },
-     oversize(){
-        this.$toast("图片太大了");
-    },
-    onRead (file) {
-      // console.log(file)
-      // console.log(file.content.length)
-      let formData = new FormData()
-      formData.append('file', file.file)
-      this.$api.fileUpload(formData, this.UUIDStr).then(res => {
-        if (res.code === 0) {
-          file.content = res.data.filePath
-          file.businessId = res.data.businessId
-          file.createDate = res.data.createDate
-          file.id = res.data.id
-          this.postData.push(file)
-          this.$emit('imageListChange', this.postData)
-        }else{
-          this.$toast(res.msg);
-        }
-      })
-    }
+    mounted() {
 
+    },
+    watch: {
+
+    },
+    methods: {
+      getIndex(index){
+        console.log(index)
+      },
+      gclick(index){
+        console.log(this.index)
+      },
+      afterRead(file) {
+              // 此时可以自行将文件上传至服务器
+              let userName = this.$store.state.nickName
+              console.log(userName)
+              let myDate = new Date().getTime() + 28800000
+              let myDate1 = new Date(myDate)
+              let data = {
+                "content":file.content,
+                "lastModifiedDate": myDate1,
+                "name": file.file.name,
+                "size": file.file.size,
+                "type": file.file.type,
+                "userName":userName
+              }
+              axios.post("/api/admins/headerImg", data, {headers: {'Content-Type': 'application/json; charset=utf-8'}}).then((result) => {
+               let res = result.data
+                if (res.status == 0) {
+                  console.log(res.res)
+                  let imgData = res.res.content;
+                 this.$store.state.headerimgData = imgData;
+                 this.upLoadMsg = res.msg
+                 this.upLoadMsg1 = '重新登录，即可更新！'
+                }
+                if(res.status == 1){
+                  this.upLoadMsg = res.msg
+                }
+                if(res.status == 2){
+                  this.upLoadMsg = res.msg
+                }
+
+
+
+
+              })
+
+
+
+      }
+    }
   }
-}
 </script>
 
 <style scoped>
-.contain {
-  margin-top: 10px;
-  padding-bottom: 10px;
-  background-color: white;
-  padding-top: 10px;
-}
+  .imgList{
+    margin-left:20%;
+  }
+  .imgItem{
+    margin-left:10px;
+  }
+  .left{
+    float:left;
+  }
 
-.image {
-  width: 50px;
-  height: 50px;
-}
-.uploader {
-  display: flex;
-  flex-direction: row;
-}
-.posting-uploader {
-  display: flex;
-  flex-direction: row;
-  margin-left: 14px;
-}
-
-.posting-uploader-item {
-  display: flex;
-  flex-direction: row;
-}
-.imgPreview {
-  width: 70px;
-  height: 70px;
-}
-.delte {
-  margin-left: -15px;
-  width: 10px;
-  height: 10px;
-  margin-right: 20px;
-}
-.upload-img-5 {
-  margin: 5px 0 90px 0;
-}
-.upload-img-1 {
-  margin: 5px 0 15px 0;
-}
+  .red{
+    color:springgreen;
+  }
+  .contain{
+    width:500px;height:300px;
+    margin-top:150px;margin-left:30%;
+    background-color:#ffffff;
+  }
 </style>

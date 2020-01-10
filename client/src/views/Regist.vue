@@ -39,23 +39,23 @@
       <el-col :span="12" offset="4">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="ruleForm.name" @blur="checkName"></el-input>
-            <span class="errmessage">{{ nameMsg}}</span>
+            <el-input v-model="ruleForm.name" @blur="checkName" >      <i v-if="nameMsgError" slot="suffix"  class="red el-input__icon el-icon-error"></i>     <i v-if="nameMsgSuccess" slot="suffix"  class="green el-input__icon el-icon-success"></i></el-input>
+            <span v-if="nameMsgSuccess" class="succmessage">{{ nameMsgSuccess}}</span>
+            <span v-if="nameMsgError" class="errmessage">{{ nameMsgError}}</span>
           </el-form-item>
-
           <el-form-item label="联系电话:" prop="buyerPhone" required>
-                  <el-input v-model="ruleForm.buyerPhone"></el-input>
+                  <el-input v-model="ruleForm.buyerPhone"><i v-if="phoneFlag1" slot="suffix"  class="red el-input__icon el-icon-error"></i>     <i v-if="phoneFlag" slot="suffix"  class="green el-input__icon el-icon-success"></i></el-input>
           </el-form-item>
           <el-form-item label="Email:" prop="buyerEmail" required>
-                  <el-input v-model="ruleForm.buyerEmail"></el-input>
+                  <el-input v-model="ruleForm.buyerEmail"><i v-if="emailFlag1" slot="suffix"  class="red el-input__icon el-icon-error"></i>     <i v-if="emailFlag" slot="suffix"  class="green el-input__icon el-icon-success"></i></el-input>
           </el-form-item>
 
 
           <el-form-item label="密码" prop="pass" required>
-            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"><i v-if="passwordFlag1" slot="suffix"  class="red el-input__icon el-icon-error"></i>     <i v-if="passwordFlag" slot="suffix"  class="green el-input__icon el-icon-success"></i></el-input>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPass" required>
-            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"><i v-if="password1Flag1" slot="suffix"  class="red el-input__icon el-icon-error"></i>     <i v-if="password1Flag" slot="suffix"  class="green el-input__icon el-icon-success"></i></el-input>
           </el-form-item>
           <el-form-item prop='checked' required >
             <el-checkbox v-model='ruleForm.checked'  :disabled="isDisabled">
@@ -182,18 +182,26 @@
       var checkPhone = (rule, value, callback) => {
           const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
           if (!value) {
-            return callback(new Error('电话号码不能为空'))
+            this.phoneFlag1 = true
+            this.phoneFlag = false;
+            return callback(new Error('电话号码不能为空') )
           }
           setTimeout(() => {
             // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
             // 所以我就在前面加了一个+实现隐式转换
 
             if (!Number.isInteger(+value)) {
+              this.phoneFlag1 = true;
+              this.phoneFlag = false;
               callback(new Error('请输入数字值'))
             } else {
               if (phoneReg.test(value)) {
+                this.phoneFlag1 = false;
+                this.phoneFlag = true
                 callback()
               } else {
+                this.phoneFlag1 = true;
+                this.phpneFlag = false;
                 callback(new Error('电话号码格式不正确'))
               }
             }
@@ -202,37 +210,63 @@
         var checkEmail = (rule, value, callback) => {
           const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
           if (!value) {
+            this.emailFlag1 = true;
+            this.emailFlag = false;
             return callback(new Error('邮箱不能为空'))
           }
           setTimeout(() => {
             if (mailReg.test(value)) {
+              this.emailFlag = true;
+              this.emailFlag1 = false;
               callback()
             } else {
+              this.emailFlag1 = true;
+              this.emailFlag = false;
               callback(new Error('请输入正确的邮箱格式'))
             }
           }, 100)
         }
       var validatePass = (rule, value, callback) => {
               if (value === '') {
+                this.passwordFlag1= true;
+                this.passwordFlag = false;
                 callback(new Error('请输入密码'));
               } else {
                 if (this.ruleForm.checkPass !== '') {
+
                   this.$refs.ruleForm.validateField('checkPass');
                 }
+                this.passwordFlag = true
+                this.passwordFlag1 = false;
                 callback();
               }
             };
             var validatePass2 = (rule, value, callback) => {
               if (value === '') {
+                this.password1Flag1= true
+                this.password1Flag= false
                 callback(new Error('请再次输入密码'));
               } else if (value !== this.ruleForm.pass) {
+                this.password1Flag1= true
+                this.password1Flag= false
                 callback(new Error('两次输入密码不一致!'));
               } else {
+                this.password1Flag= true
+                this.password1Flag1= false
                 callback();
               }
             };
       return {
-        nameMsg:'',
+        password1Flag1:false,
+        password1Flag:false,
+        passwordFlag1:false,
+        passwordFlag:false,
+        emailFlag1:false,
+        emailFlag:false,
+        phoneFlag1:false,
+        phoneFlag:false,
+        nameMsgSuccess:'',
+        nameMsgError:'',
         buttonName: "请阅读",
         time: 10,
         isDisabled: true,
@@ -334,8 +368,15 @@
           userName: this.ruleForm.name
         }).then((result) => {
           let res = result.data
-          console.log(res.msg)
-          this.nameMsg = res.msg
+
+          if(res.status == 100 && this.ruleForm.name){
+            this.nameMsgSuccess = res.msg
+            this.nameMsgError = ''
+          }
+          if(res.status == 101){
+            this.nameMsgError = res.msg
+            this.nameMsgSuccess = ''
+          }
 
 
         })
@@ -387,6 +428,7 @@
               if(res.status ==0 ){
                 console.log('注册成功！')
                 this.open()
+                this.$router.push('/')
               }else{
                 console.log('注册失败！')
               }
@@ -444,13 +486,16 @@
 </script>
 
 <style scoped>
+  .succmessage{
+    color:springgreen;
+  }
   .nav1 {
     margin-left: 5%;
 
   }
   .errmessage{
     color:red;
-    backgrond:yellow;
+    background:yellow;
   }
   .nav2 {
     margin-left: 3%;
@@ -489,5 +534,11 @@
   }
   #aa{
     writing-mode: vertical-lr;
+  }
+  .green{
+    color:lightgreen;
+  }
+  .red{
+    color:red;
   }
 </style>

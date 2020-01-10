@@ -2,15 +2,16 @@ var express = require('express')
 var router = express.Router()
 var mongoose = require('mongoose')
 
+//test 
 
-var Grid = require("gridfs-stream")
-//var gfs = Grid()
 
 
 
 var Goods = require('../models/goods')
 var Users = require('../models/users')
 var Admins = require('../models/admins')
+
+
 mongoose.connect('mongodb://localhost:27017/goods',{ useNewUrlParser:true})
 mongoose.connection.on('connected', function() {
 	console.log('mongodb connected !')
@@ -21,6 +22,18 @@ mongoose.connection.on('error', function() {
 mongoose.connection.on('disconnected', function() {
 	console.log('mongodb disconnected !')
 })
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.post('/userMsg',function(req,res,next){
 	// mongoose.connect("mongodb://localhost:27017/admins",{useNewUrlParser:true},function(err){

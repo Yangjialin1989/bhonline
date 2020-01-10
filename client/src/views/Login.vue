@@ -117,6 +117,7 @@
         }
       };
       return {
+        checked:'',
         ruleForm: {
           pass: '',
           checkPass: '',
@@ -157,32 +158,45 @@
       login() {
         //判断复选框是否被勾选 勾选则调用配置cookie方法
         if (this.checked == true) {
-          console.log("checkedd == true")
+          console.log("checked == true")
           this.setCookie(this.userName, this.userPwd, 7)
         } else {
           console.log("清空Cookies")
           //清空Cookies
           this.clearCookie()
         }
+
+        // axios.post('/api/admins/checkHeaderImg',{
+        //   userName:this.userName
+        // }).then((result)=>{
+        //   let res = result.data
+
+        // })
+
+
         axios.post('/api/admins/login', {
           userName: this.userName,
           userPwd: this.userPwd
         }).then((result) => {
 
           let res = result.data
-          console.log(res.msg)
+          //console.log(res.res.children)
           if(res.msg){
             this.errFlag = true
             this.errMessage = "用户名或密码错误!"
 
           }else{
 
-            this.$store.state.nickName = res.result.nickName
+           // this.$store.state.nickName = res.result.nickName
             this.$store.state.nickNameFlag = true
-            this.$store.state.headerImgData = res.result.headerImgData
+            if(res.res.children.length == 0){
+              this.$store.state.headerImgData = res.res.children[0]
+            }else{
+              this.$store.state.headerImgData = res.res.children[0].content
+            }
+           //
             this.$router.push('/forum')
-            console.log(res.result.headerImgData)
-            console.log(this.$store.state.headerImgData)
+
           }
 
 

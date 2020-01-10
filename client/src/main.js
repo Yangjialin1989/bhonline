@@ -38,6 +38,8 @@ import { Sidebar, SidebarItem } from 'vant';
 import { AddressEdit } from 'vant';
 import { Overlay } from 'vant';
 import { Area } from 'vant'
+import { Icon } from 'vant';
+
 
 
 
@@ -61,8 +63,8 @@ Vue.use(Sidebar);
 Vue.use(SidebarItem);
 Vue.use(AddressEdit);
 Vue.use(Overlay);
-Vue.use(Area)
-
+Vue.use(Area);
+Vue.use(Icon);
 //移动端延时
 FastClick.attach(document.body);
 
