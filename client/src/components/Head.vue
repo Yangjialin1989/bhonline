@@ -38,24 +38,8 @@
           <el-menu class="el-menu-demo" style="width:100%;" :default-active="this.$route.path" router mode="horizontal"
             @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
             <el-menu-item index="/" style="width:10%;">首页</el-menu-item>
-            <el-submenu index="/hierophant" style="width:10%;">
-              <template slot="title">导师</template>
-              <el-menu-item index="/hierophant/part1">导师介绍</el-menu-item>
-              <el-menu-item index="/hierophant/part2">导师传承</el-menu-item>
-              <el-menu-item index="/hierophant/part3">诸佛菩萨</el-menu-item>
-              <el-submenu index="/hierophan t/part4">
-                <template slot="title">慈宗大德</template>
-                <el-menu-item index="/hierophant/part4/part41">慈宗大德</el-menu-item>
-                <el-menu-item index="/hierophant/part4/part42">禅宗大德</el-menu-item>
-                <el-menu-item index="/hierophant/part4/part43">密宗大德</el-menu-item>
-              </el-submenu>
-            </el-submenu>
-            <el-submenu index="/buddhist" style="width:10%;">
-              <template slot="title">道场</template>
-              <el-menu-item index="/buddhist/part5">实地道场</el-menu-item>
-              <el-menu-item index="/buddhist/part6">网络道场</el-menu-item>
-              <el-menu-item index="/buddhist/part7">道场备忘</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="/hierophant" style="width:10%;">导师</el-menu-item>
+            <el-menu-item index="/buddhist" style="width:10%;">道场</el-menu-item>
             <el-submenu index="4" style="width:10%;">
               <template slot="title">教言</template>
               <el-menu-item index="4-1">祖师教言摘选</el-menu-item>
@@ -79,12 +63,7 @@
               <el-menu-item index="6-2">视频</el-menu-item>
               <el-menu-item index="6-3">音频</el-menu-item>
             </el-submenu>
-            <el-submenu index="8" style="width:10%;">
-              <template slot="title">直播</template>
-              <el-menu-item index="8-1">映客直播</el-menu-item>
-              <el-menu-item index="8-2">呱呱直播</el-menu-item>
-              <el-menu-item index="8-3">YY直播</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="/data" style="width:10%;">数据</el-menu-item>
             <el-menu-item index="/forum" style="width:10%;">论坛</el-menu-item>
             <el-menu-item index="/contact" style="width:10%;">联系</el-menu-item>
           </el-menu>

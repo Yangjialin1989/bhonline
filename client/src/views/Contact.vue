@@ -11,7 +11,7 @@
 
     </div>
     
-    <increment></increment>
+    
     <img v-if="btnFlag" @click="backTop" class="go-top right" style="width:30px;height:30px;" src="/static/img/backtop.png" alt="">
 
     <Foot></Foot>

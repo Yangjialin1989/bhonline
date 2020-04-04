@@ -208,7 +208,9 @@
           }, 100)
         }
         var checkEmail = (rule, value, callback) => {
-          const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+         const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+           //const mailReg = /^[A-Za-z0-9]{6,9}$/;
+
           if (!value) {
             this.emailFlag1 = true;
             this.emailFlag = false;
@@ -227,19 +229,50 @@
           }, 100)
         }
       var validatePass = (rule, value, callback) => {
-              if (value === '') {
-                this.passwordFlag1= true;
-                this.passwordFlag = false;
-                callback(new Error('请输入密码'));
-              } else {
-                if (this.ruleForm.checkPass !== '') {
+            //const passReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+              const passReg = /^[A-Za-z0-9]{6,12}$/;
 
-                  this.$refs.ruleForm.validateField('checkPass');
-                }
-                this.passwordFlag = true
-                this.passwordFlag1 = false;
-                callback();
-              }
+             if (!value) {
+               this.passwordFlag1 = true;
+               this.passwordFlag = false;
+               return callback(new Error('密码不能为空'))
+             }
+             setTimeout(() => {
+               if (passReg.test(value)) {
+                 this.passwordFlag = true;
+                 this.passwordFlag1 = false;
+                 callback()
+               } else {
+                 this.passwordFlag1 = true;
+                 this.passwordFlag = false;
+                 this.$message({
+                   message:'只允许字母或数字构成，且在6-12位之间。',
+                   type:'warning'
+                 })
+                 callback(new Error('请输入正确的密码格式'))
+               }
+             }, 100)
+
+
+
+
+
+
+
+
+              // const passReg = /^[A-Za-z0-9]{6,9}&/;
+              // if (value === '') {
+              //   this.passwordFlag1= true;
+              //   this.passwordFlag = false;
+              //   callback(new Error('请输入密码'));
+              // } else {
+              //   if (this.ruleForm.checkPass !== '') {
+              //       this.$refs.ruleForm.validateField('checkPass');
+              //   }
+              //   this.passwordFlag = true
+              //   this.passwordFlag1 = false;
+              //  callback();
+              // }
             };
             var validatePass2 = (rule, value, callback) => {
               if (value === '') {

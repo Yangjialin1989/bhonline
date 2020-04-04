@@ -9,7 +9,7 @@
 
               <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
                 <el-menu-item><img width="35" height="35" src="../assets/img/brand.png" alt=""></el-menu-item>
-                <el-menu-item index="1">论坛首页</el-menu-item>
+                <el-menu-item index="1" @click='showLeft()'>论坛首页</el-menu-item>
                 <el-menu-item index="2">达人</el-menu-item>
                 <el-menu-item index="3">排行榜</el-menu-item>
                 <el-menu-item index="4">地图</el-menu-item>
@@ -53,7 +53,26 @@
             </div>
             <div class="grid-content " @touchend="gtouchend()" @touchstart="gtouchstart()">
             </div>
-            <div v-if="this.$store.state.nickNameFlag" class="panelContent">
+
+            <div>
+              论坛首页
+              论坛首页
+            </div>
+
+            <!-- 侧边标签页 -->
+
+            <el-tabs  style="height: 200px;"  tabPosition='left'>
+               <el-tab-pane label="个人资料">个人资料</el-tab-pane>
+               <el-tab-pane label="我的关注">我的关注</el-tab-pane>
+               <el-tab-pane label="我的收藏">我的收藏</el-tab-pane>
+               <el-tab-pane label="我的帖子">我的帖子</el-tab-pane>
+               <el-tab-pane label="我的粉丝">我的粉丝</el-tab-pane>
+               <el-tab-pane label="我的论坛">我的论坛</el-tab-pane>
+               <el-tab-pane label="我的下载">我的下载</el-tab-pane>
+            </el-tabs>
+
+
+            <div v-if="showLeftFlag" class="panelContent">
               <div class="panelNav left">
                 <van-sidebar class="sidebars" v-model="activeKey" @change="onChange">
                   <van-sidebar-item title="个人资料" dot @click="show0Flag()" />
@@ -113,48 +132,23 @@
                 我的帖子
               </div>
 
-              <div v-if="showFlag4" class="panelContext1 left admin_set">
+              <div  class="panelContext1 left admin_set">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                   <el-tab-pane label="基本信息" name="first">
                     <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
-                      修改基本信息，为确保您的信息安全，一定要先设定完密码保护才可以。
+                      修改基本信息，为确保您的信息安全，最好设定完密码保护。
                     </van-notice-bar>
 
-                    <!-- <el-table :data="tableData1.filter(data => !search || data.data.toLowerCase().includes(search.toLowerCase()))"
-                      @row-click="handleCurrentChange" style="width: 100%;height:400px;overflow: scroll;">
+                    <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
 
-                      <el-table-column label="数据" prop="data">
-                      </el-table-column>
-                      <el-table-column label="内容" prop="content">
 
-                        <template slot-scope="{row,$index}">
-                          <input class="edit-cell" v-if="showEdit[$index]" v-model="row.content" @change="handleEdit(scope.$index, scope.row)">
-                          <span v-if="!showEdit[index]">{{row.content}}</span>
-                        </template>
-
-                      </el-table-column>
-                      <el-table-column align="right">
-                        <template slot="header" slot-scope="scope">
-                          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-                        </template>
-                        <template slot-scope="scope">
-                          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-                          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table> -->
-
-                    
-                          <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
-
-               
                     <el-table :data="tableData1.filter(data => !search || data.data.toLowerCase().includes(search.toLowerCase()))"
                       class="tb-edit" highlight-current-row @row-click="handleCurrentChange" style="width: 100%;height:400px;overflow: scroll;">
                       <el-table-column label="分类" width="180" prop="data">
 
                       </el-table-column>
                       <el-table-column label="数据" width="180">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                           <el-input size="small" v-model="scope.row.content" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
                           <span v-text="scope.row.content"></span>
                         </template>
@@ -164,14 +158,14 @@
                         <template slot="header" slot-scope="scope">
                           <el-input id="search1" v-model="search" size="mini" placeholder="输入关键字搜索" />
                         </template>
-                        <template scope="scope">
+                        <template slot-scope="scope">
                           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 
                         </template>
                       </el-table-column>
 
                     </el-table>
-                    <br>数据:{{tableData1}}
+
 
 
 
@@ -181,7 +175,43 @@
                   </el-tab-pane>
                   <el-tab-pane label="配置管理" name="second">开发中...</el-tab-pane>
                   <el-tab-pane label="角色管理" name="third">开发中...</el-tab-pane>
-                  <el-tab-pane label="密码保护" name="fourth">设定密码保护</el-tab-pane>
+                  <el-tab-pane label="密码保护" name="fourth">
+                    <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
+                      问题输入框会自动加载一些默认问题目录，可供您参考，选中后若错误提示，可以再次尝试。
+                    </van-notice-bar>
+
+                    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                      <el-form-item label="问题1" prop="que1">
+                        <el-autocomplete v-model="ruleForm.que1" placeholder="请输入内容" style="width:100%;" :fetch-suggestions="querySearchAsync" @select="handleSelect"></el-autocomplete>
+                      </el-form-item>
+                      <el-form-item label="答案1" prop="ans1">
+                        <el-input v-model="ruleForm.ans1" placeholder="请输入内容"></el-input>
+                      </el-form-item>
+                      <el-form-item label="问题2" prop="que2">
+                        <el-autocomplete v-model="ruleForm.que2" placeholder="请输入内容" style="width:100%;" :fetch-suggestions="querySearchAsync" @select="handleSelect"></el-autocomplete>
+                      </el-form-item>
+                      <el-form-item label="答案2" prop="ans2">
+                        <el-input v-model="ruleForm.ans2" placeholder="请输入内容"></el-input>
+                      </el-form-item>
+                      <el-form-item label="问题3" prop="que3">
+                        <el-autocomplete v-model="ruleForm.que3" placeholder="请输入内容" style="width:100%;" :fetch-suggestions="querySearchAsync" @select="handleSelect"></el-autocomplete>
+
+                      </el-form-item>
+                      <el-form-item label="答案3" prop="ans3">
+                        <el-input v-model="ruleForm.ans3" placeholder="请输入内容"></el-input>
+                      </el-form-item>
+
+                      <el-form-item>
+                        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                      </el-form-item>
+                    </el-form>
+
+
+
+
+
+                  </el-tab-pane>
                 </el-tabs>
               </div>
 
@@ -312,6 +342,52 @@
 
     data() {
       return {
+        restaurants: [],
+                state: '',
+                timeout:  null,
+        ruleForm: {
+          que1: '',
+          que2: '',
+          que3: '',
+          ans1: '',
+          ans2: '',
+          ans3: '',
+        },
+         rules: {
+                  que1:
+                  [
+                    { required: true, message: '请输入问题1', trigger: 'blur' },
+                    { min: 5, max: 25, message: '长度在 5 到 25 个字符', trigger: 'blur' }
+                  ],
+                  que2:
+                  [
+                    { required: true, message: '请输入问题2', trigger: 'blur' },
+                    { min: 5, max: 25, message: '长度在 5 到 25 个字符', trigger: 'blur' }
+                  ],
+                  que3:
+                  [
+                    { required: true, message: '请输入问题3', trigger: 'blur' },
+                    { min: 5, max: 25, message: '长度在 5 到 25 个字符', trigger: 'blur' }
+                  ],
+                  ans1:
+                  [
+                    { required: true, message: '请输入答案1', trigger: 'blur' },
+                    { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+                  ],
+                  ans2:
+                  [
+                    { required: true, message: '请输入答案2', trigger: 'blur' },
+                    { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+                  ],
+                  ans3:
+                  [
+                    { required: true, message: '请输入答案3', trigger: 'blur' },
+                    { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+                  ],
+
+         },
+
+
         showEdit: [0, 1, 2, 3, 4, 5],
         tableData: [{
           date: '2016-05-02',
@@ -376,6 +452,7 @@
         ],
         search: '',
         contents: '',
+        showLeftFlag:false,
         showFlag0: false,
         showFlag1: false,
         showFlag2: false,
@@ -411,51 +488,86 @@
     },
     created() {
       this.layout();
-      this.layout1();
+
     },
     mounted() {
-      window.addEventListener('scroll', this.scrollToTop)
+      window.addEventListener('scroll', this.scrollToTop);
+      this.restaurants = this.loadAll();
 
     },
     destroyed() {
       window.removeEventListener('scroll', this.scrollToTop)
     },
     methods: {
-      //点击编辑
-      // handleEdit(index, row) {
+      showLeft(){
+        this.showLeftFlag = true;
+      },
+      loadAll() {
+              return [
+                { "value": "哪一年皈依佛教的?" },
+                { "value": "您的出生地是?" },
+                { "value": "您高中班主任的名字是?" },
+                { "value": "您小学班主任的名字是?" },
+                { "value": "您的学号(或工号)是?" },
+                { "value": "您的生日是?" },
+                { "value": "您父亲的生日是?" },
+                { "value": "您母亲的生日是?" },
+                { "value": "我最爱吃的水果是?" },
+                { "value": "我最喜欢的电影?" },
+                { "value": "诸法之精要为何?" },
+                { "value": "中国有多少人口?" },
+              ];
+            },
+            querySearchAsync(queryString, cb) {
+              var restaurants = this.restaurants;
+              var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
-      //   console.log(index);
-      //     this.editFormVisible = true;
-      //     var arr = this.showEdit;
-      //     console.log(arr);
-      //     console.log(arr[1]);
-      //     console.log(this.showEdit)
-      //     this.showEdit[index] = true;
-      //     this.editForm = Object.assign({}, row); //这句是关键！！！
-      // },
-
-      // //点击关闭dialog
-      // handleClose(done) {
-      //     /*done();
-      //     location.reload();*/
-      //     this.editFormVisible = false;
-      // },
-
-      // //点击取消
-      // handleCancel(formName) {
-      //     this.editFormVisible = false;
-      // },
-
-      // //点击更新
-      // handleUpdate(forName) {
-      //     //更新的时候就把弹出来的表单中的数据写到要修改的表格中
-      //     var postData = {
-      //         name: this.editForm.name
-      //     }
-
-      //     //这里再向后台发个post请求重新渲染表格数据
-      //     this.editFormVisible = false;
-      // },
+              clearTimeout(this.timeout);
+              this.timeout = setTimeout(() => {
+                cb(results);
+              }, 3000 * Math.random());
+            },
+            createStateFilter(queryString) {
+              return (state) => {
+                return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+              };
+            },
+            handleSelect(item) {
+              console.log(item);
+            }
+        ,
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let data = {
+              'userName':this.$store.state.nickName,
+              'pwd_question1':this.ruleForm.que1,
+              'pwd_answer1':this.ruleForm.ans1,
+              'pwd_question2':this.ruleForm.que2,
+              'pwd_answer2':this.ruleForm.ans2,
+              'pwd_question3':this.ruleForm.que3,
+              'pwd_answer3':this.ruleForm.ans3,
+            };
+            axios.post('/api/admins/pwd_protection',data).then((result)=>{
+              let res = result.data
+              if(res.status ==0 ){
+                console.log('密保设定成功！')
+                this.open()
+                this.$router.push('/forum')
+              }else{
+                console.log('密保设定失败！')
+              }
+            })
+            console.log(this.ruleForm)
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        })
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
       handleCurrentChange(row, event, column) {
         //console.log(row, event, column, event.currentTarget)
 
@@ -641,7 +753,6 @@
 </script>
 
 <style scoped>
-
   .tb-edit .el-input {
     display: none
   }
@@ -653,8 +764,9 @@
   .tb-edit .current-row .el-input+span {
     display: none
   }
-#search1{
-    display:block;
+
+  #search1 {
+    display: block;
   }
 
 
@@ -725,7 +837,7 @@
     width: 100px;
     position: absolute;
     right: 15%;
-    top: 11%;
+    top: 15%;
     border: 0px solid red;
   }
 
@@ -738,8 +850,8 @@
   #nav1 {
     width: 180px;
     position: absolute;
-    right: 12%;
-    top: 11%;
+    right: 15%;
+    top: 15%;
     border: 0px solid red;
   }
 

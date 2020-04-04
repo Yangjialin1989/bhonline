@@ -3,26 +3,15 @@ import Router from 'vue-router'
 
 import Index from '@/views/Index'
 
-import Hierophant from '@/views/hierophant/Hierophant'
-import Part1 from '@/views/hierophant/Part1'
-import Part2 from '@/views/hierophant/Part2'
-import Part3 from '@/views/hierophant/Part3'
-import Part4 from '@/views/hierophant/Part4'
-import Part41 from '@/views/hierophant/Part41'
-import Part42 from '@/views/hierophant/Part42'
-import Part43 from '@/views/hierophant/Part43'
+import Hierophant from '@/views/Hierophant'
 
-import Buddhist from '@/views/buddhist/Buddhist'
-import Part5 from '@/views/buddhist/Part5'
-import Part6 from '@/views/buddhist/Part6'
-import Part7 from '@/views/buddhist/Part7'
-
+import Buddhist from '@/views/Buddhist'
 
 import Sermon from '@/views/Sermon'
 import Track from '@/views/Track'
 import Grace from '@/views/Grace'
 import Media from '@/views/Media'
-import Live from '@/views/Live'
+import Data from '@/views/Data'
 import Forum from '@/views/Forum'
 import Contact from '@/views/Contact'
 import Regist from '@/views/Regist'
@@ -30,15 +19,11 @@ import Login from '@/views/Login'
 import Help from '@/views/Help'
 import Map from '@/views/Map'
 import Email from '@/views/Email'
+import Resetpwd from '@/views/Resetpwd'
 
-
-//components 
+//components
 import BackTop from '@/components/BackTop'
 import afterSaleImage from '@/components/afterSaleImage'
-
-
-
-
 
 Vue.use(Router)
 
@@ -52,68 +37,12 @@ export default new Router({
     {
       path: '/hierophant',
       name: 'Hierophant',
-      component: Hierophant,
-      children:[
-        {
-          path:'part1',
-          name:'Part1',
-          component:Part1
-        },
-        {
-          path:'part2',
-          name:'Part2',
-          component:Part2
-        },
-        {
-          path:'part3',
-          name:'Part3',
-          component:Part3
-        },
-        {
-          path:'part4',
-          name:'Part4',
-          component:Part4,
-          children:[
-            {
-              path:'part41',
-              name:'Part41',
-              component:Part41
-            },
-            {
-              path:'part42',
-              name:'Part42',
-              component:Part42
-            },
-            {
-              path:'part43',
-              name:'Part43',
-              component:Part43
-            }
-          ]
-        },
-      ]
+      component: Hierophant
     },
     {
       path: '/buddhist',
       name: 'Buddhist',
-      component: Buddhist,
-      children:[
-        {
-          path:'part5',
-          name:'Part5',
-          component:Part5
-        },
-        {
-          path:'part6',
-          name:'Part6',
-          component:Part6
-        },
-        {
-          path:'part7',
-          name:'Part7',
-          component:Part7
-        }
-      ]
+      component: Buddhist
     },
     {
       path: '/sermon',
@@ -136,9 +65,9 @@ export default new Router({
       component: Media
     },
     {
-      path: '/live',
-      name: 'Live',
-      component: Live
+      path: '/data',
+      name: 'Data',
+      component: Data
     },
     {
       path: '/forum',
@@ -174,6 +103,11 @@ export default new Router({
       path: '/email',
       name: 'Email',
       component: Email
+    },
+    {
+      path: '/resetpwd',
+      name: 'Resetpwd',
+      component: Resetpwd
     }
   ]
 })

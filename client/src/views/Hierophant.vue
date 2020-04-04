@@ -1,46 +1,34 @@
 <template>
   <div>
     <Head></Head>
-
 	<el-row>
-		<el-col :span="4">
-
-		    <el-menu
-		      default-active="2"
-		      class="el-menu-vertical-demo"
-		      @open="handleOpen"
-		      @close="handleClose"
-		      background-color="#FFFAF0"
-		      text-color="#000"
-		      active-text-color="#ffd04b">
-		     <el-menu-item index="/hierophant/part1">
-           <span slot="title">导师介绍</span>
-         </el-menu-item>
-		     <el-menu-item index="/hierophant/part2">
-           <span slot="title">导师传承</span>
-         </el-menu-item>
-		     <el-menu-item index="/hierophant/part3">诸佛菩萨</el-menu-item>
-		     <el-submenu index="/hierophant/part4">
-		       <template slot="title">诸宗大德</template>
-		       <el-menu-item index="/hierophant/part4/part41">慈宗大德</el-menu-item>
-		       <el-menu-item index="/hierophant/part4/part42">禅宗大德</el-menu-item>
-		       <el-menu-item index="/hierophant/part4/part43">密宗大德</el-menu-item>
-		     </el-submenu>
-
-		    </el-menu>
-		  </el-col>
-
-
+		<el-col :span="24" offset="0">
+			<el-tabs class='bg1' type="border-card" tab-position="left" style="height: 100%;" >
+			  <el-tab-pane  label="导师介绍">
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+          <div>导师传承</div>
+        </el-tab-pane>
+			  <el-tab-pane label="导师传承">导师传承</el-tab-pane>
+			  <el-tab-pane label="诸佛菩萨">诸佛菩萨</el-tab-pane>
+			  <el-tab-pane label="诸宗大德">诸宗大德</el-tab-pane>
+			</el-tabs>
+		</el-col>
 	</el-row>
 
-    <Part1></Part1>
-    <Part2></Part2>
-    <Part3></Part3>
-    <Part4></Part4>
-	
+
 	<img v-if="btnFlag" @click="backTop" class="go-top right" style="width:30px;height:30px;" src="/static/img/backtop.png" alt="">
-	
-	
+
+
     <Foot></Foot>
   </div>
 </template>
@@ -48,10 +36,6 @@
 <script>
   import Head from '@/components/Head'
   import Foot from '@/components/Foot'
-  import Part1 from '@/views/hierophant/Part1'
-  import Part2 from '@/views/hierophant/Part2'
-  import Part3 from '@/views/hierophant/Part3'
-  import Part4 from '@/views/hierophant/Part4'
   export default {
     data(){
       return{
@@ -65,7 +49,7 @@
 	  } else {
 	    this.height = $(window).width() * 7 / 15 + 'px';
 	  }
-	
+
 	},
     methods:{
 
@@ -95,19 +79,15 @@
 			  } else {
 			    that.btnFlag = false
 			  }
-			
-			
+
+
 			}
 
     },
     created() {
-     
+
     },
     components:{
-      Part1,
-      Part2,
-      Part3,
-      Part4,
       Head,
       Foot
     }
@@ -115,10 +95,13 @@
 </script>
 
 <style scoped>
+  .bg1{
+    background-image:url('../assets/img/bg-02.jpg')
+  }
 	.go-top {
 	  position: fixed;
 	  bottom: 40px;
 	  right: 30px;
-	
+
 	}
 </style>

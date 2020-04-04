@@ -44,14 +44,15 @@
 
 
           <li class="left btn1">
-            <a class="left" href="#">忘记密码?</a>
+           <!-- <a class="left" href="#">忘记密码?</a> -->
+           <router-link to="/resetpwd"><a  class="left" href="javascript:void(0)">忘记密码？</a></router-link>
           </li>
           <li class='btn2 left'>
             <p>
               <span class="left btn4">第三方登录&nbsp;&nbsp;|</span>
-              <router-link to=""><img class='left img1' style="width:14px;height:14px;" src="../../static/img/wx.png"
+              <router-link to=""><img @click="open1" class='left img1' style="width:14px;height:14px;" src="../../static/img/wx.png"
                   alt=""></router-link>
-              <router-link to=""><img class="left img2" style="width:14px;height:14px;" src="../../static/img/QQ.png"
+              <router-link to=""><img @click="open1" class="left img2" style="width:14px;height:14px;" src="../../static/img/QQ.png"
                   alt=""></router-link>
               <span class="right btn3">
                 <router-link to="/regist">立即注册</router-link>
@@ -148,13 +149,18 @@
     },
     mounted: function() {
       //记住密码
-      this.getCookie()
+      this.getCookie();
     },
     computed: {
 
     },
     methods: {
-
+      open1(){
+        this.$message({
+          message:'不好意思，该功能正在开发，给您带来不便了。',
+          type:'warning'
+        })
+      },
       login() {
         //判断复选框是否被勾选 勾选则调用配置cookie方法
         if (this.checked == true) {

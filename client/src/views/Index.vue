@@ -6,7 +6,7 @@
         <el-carousel :interval="4000" arow="always" :height="height">
           <el-carousel-item v-for="(item,index) in list" :key="index">
             <div class="demo-image" id="imgbg">
-              <el-image style="wdith:800px" fit="contain" :src="'/static/img/'+item.image" alt="" :key="'/static/img/' + item.image"></el-image>
+              <el-image style="wdith:800px" fit="contain" :src="'../../static/img/'+item.image" alt="" :key="'/static/img/'+item.image"></el-image>
             </div>
 
           </el-carousel-item>
