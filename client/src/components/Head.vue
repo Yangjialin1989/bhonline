@@ -21,7 +21,7 @@
         <div class="demo-image">
           <div class="block">
 
-            <el-image style="width: 100%; height: 100%" src="/static/img/Bg-01.png"></el-image>
+            <el-image style="width: 100%; height: 100%" src="../../static/img/Bg-01.png"></el-image>
           </div>
         </div>
 

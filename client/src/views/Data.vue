@@ -10,6 +10,7 @@
               <el-menu :default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
                 <el-menu-item><img width="35" height="35" src="../assets/img/brand.png" alt=""></el-menu-item>
                 <el-menu-item index="1">数据首页</el-menu-item>
+               
                 <el-menu-item index="2">排行榜</el-menu-item>
                 <el-menu-item index="3">地图</el-menu-item>
                 <el-menu-item>
@@ -21,7 +22,7 @@
                   </div>
                 </el-menu-item>
                 <el-menu-item>
-                  <el-button :show="show3"  type="danger" @click="addGoods()">添加</el-button>
+                  <el-button :show="show3"  type="danger" @click="addDatas()">添加</el-button>
                 </el-menu-item>
                 </el-menu-item>
               </el-menu>
