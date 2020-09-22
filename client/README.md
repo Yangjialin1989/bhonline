@@ -39,7 +39,7 @@
 | 8    |              |            |      |      |
 | 9    |              |            |      |      |
 
-### 3.视图 src/views 
+### 3.视图 src/views
 
 | 序号 | component      |      |             |      |
 | ---- | -------------- | ---- | ----------- | ---- |
@@ -62,9 +62,91 @@
 
 ### 1.数据库 MongoDB
 
+2020国庆数据字段设计：
+集合名   datas
 
-
-### 2.数据接口 /api
+1.  俗名        commonName
+2.  法名        dharmaName
+3.  性别        gender          3.1  男   male   3.2  女 female
+4.  来源地      source
+5.  联系电话    phoneNumber             number
+6.  身份证号码  IdNumber                number
+7.  达到时间    到达日期    arrivalDate1  到达时间   arrivalDate2
+8.  预离时间    预离日期    departureDate1  预离时间  departureDate2
+9.  介绍人      references
+10. 担保人      guarantor
+11. 应急电话    emergencyPhone         number
+12. 签到        signature
+13. 签退人      signBack
+14. 签退日期    signBackDate
+15. 经办人      agent
+16. 备注        note
+17. 是否删除    dataIsDelete            boolean
+18. 入住天数    days                    number
+19. 因果钱      causalMoney             number
+20. 押金        deposit
+21. 退押情况    returnMoney
+22. 领用物品    recipientsGoodsList
+            22.1  床架上   bedsteadUp
+            22.2  床架下   bedsteadDown
+            22.3  床板     bedBoard
+            22.4  扶梯     escalator
+            22.5  草席     mat
+            22.6  垫背     quiltDown
+            22.7  被子     quiltUp
+            22.8  被套     beddingBag
+            22.9  床单     sheets
+            22.10 枕头     pillow
+            22.11 枕套     pillowcase
+            22.12 脸盆     washBasin           ，剩余数量提醒
+            22.13 桶       barrel                剩余数量提醒
+            22.14 餐盘     plate
+            22.15 筷子     chopsticks
+            22.16 羹匙     spoon
+            22.17 碗       bowl
+23. 体温         bodyTemperature
+24. 来路径登记
+            24.1  来日期     toDate
+            24.2  来时间     toTime
+            24.1  中转一次来日期     toDate1
+            24.2  中转一次来时间     toTime1
+            24.1  中转二次来日期     toDate2
+            24.2  中转二次来时间     toTime2
+            24.3  交通方式   toTrafficTools  24.3.1  飞机  plane  24.3.2   火车  train  24.3.3  汽车 car  
+            24.4  到日期             arriveDate
+            24.5  到时间             arriveTime
+            24.4  中转一次到日期      arriveDate1
+            24.5  中转一次到时间      arriveTime1
+            24.4  中转二次到日期      arriveDate2
+            24.5  中转二次到时间      arriveTime2
+            24.6  出发地     toPlace     
+            24.6  中转一次出发地     toPlace1 
+            24.6  中转一次出发地     toPlace2  
+            24.7  中转二次到达地     arrivePlace
+            24.7  中转二次到达地     arrivePlace1
+            24.7  中转二次到达地     arrivePlace2
+            array
+            车次/航班号      trafficNumber
+            中转一次车次/航班号  trafficNumber1
+            中转二次车次/航班号  trafficNumber2
+    
+25  去路径登记
+            25.1  日期     returnDate
+            25.2  时间     returnTime
+            25.3  交通方式   returnTrafficTools  24.3.1  飞机  plane  24.3.2   火车  train  24.3.3  汽车 car
+            25.4  到日期   returnArriveDate
+            25.5  到时间   returnArriveTime
+            25.6  出发地     returnToPlace      
+            25.7  到达地     returnArrivePlace  array           
+26. 床位  bedNumber
+            
+            
+            
+            
+            
+             
+             
+## 2.数据接口 /api
 
 
 
@@ -825,29 +907,29 @@ vuex  vue的状态管理模式
          }
 
          5.2 添加事件，将vuex的实例this.$store 中的mutations:{addIncrement(state){ this.state += 5} }中的函数调用,使用commit指令,可以传递参数
-         
+
          methods:{
            addHandle(){
              this.$store.commit("addIncrement")
            }
          }
-         
+
          methods:{
            addHandle(){
              this.$store.commit("addIncrement",{name:'payload',age:18,n:5})
            }
          }
-       
-       
+
+
       第二种使用方法  结构赋值
-      
+
       import {mapState} from 'vuex'
-       
-      
-       
-       
-         
-         
+
+
+
+
+
+
 ``
 
 3.协助工具  git  teambition pubu

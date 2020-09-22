@@ -45,12 +45,13 @@ import { Icon } from 'vant';
 
 
 
+import Print from './plugins/print/Print'
+Vue.use(Print)
+
+//4.2print插件
 
 
 
-
-
-//4.2
 
 //4.3vant挂载
 Vue.use(Button)
@@ -69,6 +70,7 @@ Vue.use(Icon);
 FastClick.attach(document.body);
 
 
+//4.4 引入自定义方法
 
 
 Vue.config.productionTip = false

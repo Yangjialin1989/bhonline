@@ -17,7 +17,7 @@ var adminsRouter = require('./routes/admins')
 var feedBacksRouter = require('./routes/feedBacks')
 var picturesRouter = require('./routes/pictures')
 var listsRouter = require('./routes/lists')
-
+var datasRouter = require('./routes/datas')
 
 
 
@@ -67,7 +67,7 @@ app.use('/admins',adminsRouter)
 app.use('/feedBacks',feedBacksRouter)
 app.use('/pictures',picturesRouter)
 app.use('/lists',listsRouter)
-
+app.use('/datas',datasRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

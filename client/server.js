@@ -66,6 +66,6 @@ apiRoutes.post('/email', function(req, res) {
 app.use('/api', apiRoutes)
 
 
-app.listen(8081, function() {
+app.listen(8088, function() {
     console.info('复制打开浏览器', 'localhost:8081')
 })

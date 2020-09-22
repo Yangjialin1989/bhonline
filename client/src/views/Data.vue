@@ -22,7 +22,7 @@
                   </div>
                 </el-menu-item>
                 <el-menu-item>
-                  <el-button :show="show3"  type="danger" @click="addDatas()">添加</el-button>
+                  <el-button :show="show3"  type="danger" @click="addGoods()">添加</el-button>
                 </el-menu-item>
                 </el-menu-item>
               </el-menu>
