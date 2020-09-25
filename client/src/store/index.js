@@ -13,7 +13,8 @@ const store = new Vuex.Store({
     nickName:'',
     num:100,
     headerImgData:'',
-    commonName:''
+    commonName:'',
+    _id:''
   },
   //getter,对state进行过滤,模块引入 this.$store.getters.filterNum
   getters:{

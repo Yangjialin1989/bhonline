@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Head></Head>
+    <Head v-if="flagHead"></Head>
     <div class="bg">
       <el-row :gutter="24">
         <el-col :span="navSpans" :offset="navOffsets">
@@ -9,10 +9,10 @@
             <el-menu-item index="1" @click="showDataIndex">数据首页</el-menu-item>
             <el-menu-item index="2" @click="showSearch">列表</el-menu-item>
             <el-menu-item index="3">排行榜</el-menu-item>
-            <el-menu-item index="3">地图</el-menu-item>
+            <el-menu-item index="4">地图</el-menu-item>
             <el-menu-item>
               <div>
-                <el-input v-if="show2" placeholder="搜你所想" v-model="search" class="input-search">
+                <el-input v-if="show2" @input="change($event)" placeholder="姓名查找数据" v-model="search" class="input-search">
 
                   <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
@@ -20,11 +20,105 @@
             </el-menu-item>
             <el-menu-item>
               <el-button :show="show3" type="danger" :disabled="disabled" @click="addDatas()">入场登记</el-button>
+              <el-button  type="danger" :disabled="disabled" @click="leave()">离场登记</el-button>
+         
             </el-menu-item>
             </el-menu-item>
           </el-menu>
         </el-col>
       </el-row>
+
+
+      <!-- 列表 -->
+      <el-row :gutter="24">
+        <el-col :span="20" :offset="2" v-if="show00">
+
+        </el-col>
+        <el-col :span="20" :offset="2" v-if="show00">
+          <el-table
+           :data="infoAllList.filter(data => !search || data.commonName.toLowerCase().includes(search.toLowerCase()))"
+           ref="filterTable"
+           show-summary
+        
+           stripe
+           style="width: 100%">
+               <el-table-column fixed label="序号"
+                  type="index"
+                 :index="indexMethod">
+               </el-table-column>
+              
+               <el-table-column fixed width="70"
+                prop="commonName" label="姓名" >
+               </el-table-column>
+               <el-table-column width="50"
+                prop="dharmaName" label="法名" >
+               </el-table-column>
+               <el-table-column width="50"
+                prop="gender" label="性别" >
+               </el-table-column>
+               <el-table-column width="210"
+                prop="source" label="来源地" >
+               </el-table-column>
+               <el-table-column width="100" column-key="arrivalDate1" 
+                :filters="[{text: '2020-09-26', value: '2020-09-26'},{text: '2020-09-27', value: '2020-09-27'},{text: '2020-09-28', value: '2020-09-28'},{text: '2020-09-29', value: '2020-09-29'},{text: '2020-09-30', value: '2020-09-30'}, {text: '2020-10-01', value: '2020-10-01'}, {text: '2020-10-02', value: '2020-10-02'}, {text: '2020-10-03', value: '2020-10-03'},{text: '2020-10-04', value: '2020-10-04'},{text: '2020-10-05', value: '2020-10-05'},{text: '2020-10-06', value: '2020-10-06'}]"
+                 :filter-method="filterHandler"
+                prop="arrivalDate1" label="到达日期" >
+               </el-table-column>
+                <el-table-column  width="100" column-key="departureDate1"
+                :filters="[{text: '2020-10-01', value: '2020-10-01'},{text: '2020-10-02', value: '2020-10-02'},{text: '2020-10-03', value: '2020-10-03'},{text: '2020-10-04', value: '2020-10-04'},{text: '2020-10-05', value: '2020-10-05'}, {text: '2020-10-06', value: '2020-10-06'}, {text: '2020-10-07', value: '2020-10-07'}, {text: '2020-10-08', value: '2020-10-08'},{text: '2020-10-09', value: '2020-10-09'},{text: '2020-10-10', value: '2020-10-10'},{text: '2020-10-11', value: '2020-10-11'}]"
+                 :filter-method="filterHandler"
+                prop="departureDate1" label="预离日期" >
+               </el-table-column>
+               <el-table-column
+                prop="departureDate3" label="实离日期" >
+               </el-table-column>
+                <el-table-column
+                prop="days" label="登记天数" >
+               </el-table-column>  
+               <el-table-column
+                prop="day2" label="差异天数" >
+               </el-table-column>  
+
+               <el-table-column
+                prop="moneyFunc" label="押还方式" >
+               
+               </el-table-column>     
+                <el-table-column
+                prop="causalMoney" label="预交因果" width="80">
+               </el-table-column>          
+               <el-table-column
+                prop="phoneNumber" label="电话" >
+               </el-table-column>
+               <el-table-column
+                prop="emergencyPhone" label="紧急电话" >
+               </el-table-column>
+               <el-table-column
+                prop="references" label="介绍人">
+               </el-table-column>
+               <el-table-column
+                prop="guarantor" label="担保人" >
+               </el-table-column>
+                
+                <el-table-column
+                prop="agent" label="经办人">
+            
+              
+               </el-table-column>
+                <el-table-column  width="50"
+                prop="isOK" label="状态" > </el-table-column> 
+         </el-table>
+
+
+
+
+
+
+
+        </el-col>
+      </el-row>
+
+
+
       <!-- 数据首页 -->
       <el-row :gutter="24">
         <el-col :span="navSpans" :offset="navOffsets" v-if="show1">
@@ -37,9 +131,100 @@
 
         </el-col>
       </el-row>
+      <!-- 离场登记页面 -->
+      <el-row>
+        <el-col :span="20" :offset="2">
+          <el-form style="margin-top:20px;" v-if="show0" :model="ruleForm0" :rules="rules0" ref="ruleForm0" class="demo-ruleForm"
+            label-width="100px" label-position="right">
+            <el-form-item label="姓名" prop="commonName">
+              <el-col :span="8">
+                <el-input v-model="ruleForm0.commonName" @change="getInfo()"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="法名" prop="dharmaName">
+              <el-col :span="8">
+                <el-input  :disabled="edit" v-model="ruleForm0.dharmaName"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="预离时间" class="i" required>
+              <el-col :span="10">
+                <el-form-item prop="departureDate1">
+                  <el-date-picker  :disabled="edit" :editable="false" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" placeholder="选择日期"
+                    v-model="ruleForm0.departureDate1" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col class="line" :span="2">-</el-col>
+              <el-col :span="7">
+                <el-form-item prop="departureDate2">
+                  <el-time-picker  :disabled="edit" placeholder="选择时间" v-model="ruleForm0.departureDate2" style="width: 100%;"></el-time-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="登记天数" prop="days">
+              <el-col :span="7">
+                <el-input  :disabled="edit" v-model="ruleForm0.days"></el-input>
+              </el-col>
+            </el-form-item>
+           <el-form-item label="实离时间" class="i" required>
+              <el-col :span="10">
+                <el-form-item prop="departureDate3">
+                  <el-date-picker @change="Days1" :editable="false" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" placeholder="选择日期"
+                    v-model="ruleForm0.departureDate3" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col class="line" :span="2">-</el-col>
+              <el-col :span="7">
+                <el-form-item prop="departureDate4">
+                  <el-time-picker placeholder="选择时间" v-model="ruleForm0.departureDate4" style="width: 100%;"></el-time-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="实住天数" prop="day2">
+              <el-col :span="8">
+                <el-input v-model="ruleForm0.day2"></el-input>
+              </el-col>
+            </el-form-item>
+           
+            <el-form-item label="差异天数" prop="">
+              <el-col :span="8">
+                <el-input v-model="daysNote1"></el-input>
+              </el-col>
+            </el-form-item> 
+            <el-form-item label="预交因果钱" prop="causalMoney">
+              <el-col :span="8">
+                <el-input  :disabled="edit" v-model="ruleForm0.causalMoney"></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item label="押金去向" prop="moneyFunc">
+              <el-col :span="18">
+                <el-radio-group @change="moneyF()" v-model="ruleForm0.moneyFunc">
+                     <el-radio-button label="返还本人"></el-radio-button>
+                    <el-radio-button label="转为因果"></el-radio-button>
+                        <el-radio-button label="转为供养"></el-radio-button>
+                 </el-radio-group>    </el-col>
+            </el-form-item>
+            <el-form-item label="应返" prop="">
+              <el-col :span="8">
+                <el-input v-model="money"></el-input>
+                <el-tag type="warning">返还金额自动计算，如有差异请告知！负数为应补交，正数为应返还！</el-tag>
+              </el-col>
 
+            </el-form-item>
+            <el-form-item label="登记人" prop="agent1">
+              <el-col :span="8">
+                <el-input v-model="ruleForm0.agent1"></el-input>
+              </el-col>
+            </el-form-item>
+           <el-form-item>
+           <el-col :span="20" offset="2">
+            <el-button :disabled="edit1" type="primary" @click="submitForm('ruleForm0')">提交</el-button>
+            <el-button @click="resetForm('ruleForm0')">重置</el-button></el-col>
+           </el-form-item>
 
-      <!-- 登记页面 -->
+          </el-form>
+        </el-col>
+      </el-row> 
+      <!-- 入场登记页面 -->
       <el-row>
 
         <el-col span="24" offset="0" v-if="show3">
@@ -758,7 +943,7 @@
             </el-row>
              <el-col :span="24" :offset="0" style="margin-top:10px;">
              
-                   <el-button type="primary" @click="submitEnd" v-if="submitEndBtn"  :disabled="disabledEnd">完成</el-button>
+                   <el-button type="primary" @click="submitEnd1" v-if="submitEndBtn"  :disabled="disabledEnd">完成</el-button>
                 </el-col>
 
 
@@ -771,13 +956,294 @@
 
 
 
-                 <el-col :span="24" :offset="0" style="margin-top:10px;">
-             
-                   <el-button type="primary" @click="submitEnd">完成</el-button>
-                </el-col>
+
+          <!--页面打印预览**************************************************************************************************-->
+           <div ref="print">
+        
+          <el-dialog title="登记信息预览" :visible.sync="dialogTableVisible1" width="10rem" >
+          
+
+               <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
+              <el-divider style="width:9.5rem;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">1.基本信息表：</i></el-divider>
+            </el-col>
+
+             <van-notice-bar mode="closeable" left-icon="volume-o" :text="textNote1">
+            <marquee width="260%;" behavior="" direction="">
+              请核对信息，你已登记完，PC端打印表单，然后领取物品！谢谢配合！  </marquee>
+          </van-notice-bar>
+
+             <el-table :data="infoList" border >
+                <el-table-column
+                prop="arrivalDate1" label="到达日期" width="80px">
+               </el-table-column>
+                <el-table-column
+                prop="departureDate1" label="预离日期" width="80">
+               </el-table-column>
+                <el-table-column
+                prop="days" label="入住天数" width="50px">
+               </el-table-column>
+               <el-table-column
+                prop="commonName" label="姓名" width="55px">
+               </el-table-column>
+               <el-table-column
+                prop="dharmaName" label="法名" width="45px">
+               </el-table-column>
+               <el-table-column
+                prop="gender" label="性别" width="35px">
+               </el-table-column>
+                <el-table-column
+                prop="source" label="来源地" width="100px;">
+               </el-table-column>
+               <el-table-column
+                prop="phoneNumber" label="电话" width="90">
+               </el-table-column>
+               <el-table-column
+                prop="emergencyPhone" label="紧急电话" width="90">
+               </el-table-column>
+               <el-table-column
+                prop="IdNumber" label="身份证" width="77">
+               </el-table-column>
+               <el-table-column
+                prop="references" label="介绍人" width="55px">
+               </el-table-column>
+               <el-table-column
+                prop="guarantor" label="担保人" width="45px">
+               </el-table-column>
+                <el-table-column
+                prop="causalMoney" label="金额" width="45px">
+               </el-table-column>
+                <el-table-column
+                prop="agent" label="经办人" width="45px">
+               </el-table-column>
+            </el-table>
+           
+           <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
+              <el-divider style="width:9.5rem;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">2.物品申领表：</i></el-divider>
+            </el-col>
+            
+            <table class="_table">
+              <tr>
+                <td class="thead">序号</td>
+                <td class="td" v-for="(item,i) in goodsList">{{i+1}}</td>
+              </tr>
+              <tr>
+                <td class="thead">品相</td>
+                <td class="td" v-for="(item,i) in goodsList">{{item.name}}</td>
+              </tr>
+              <tr>
+                <td class="thead">数量</td>
+                <td class="td" v-for="(item,i) in goodsList">{{item.num}}</td>
+              </tr>
+              
+            </table>
+
+            <!--
+            <el-table :data="goodsList"   stripe height="700" 
+                                   >
+              <el-table-column label="No." prop="index" width="50">
+              </el-table-column> 
+              <el-table-column label="品项" prop="name">
+              </el-table-column> 
+              <el-table-column label="数量" prop="num">
+              </el-table-column> 
+              <el-table-column label="归还" >
+              </el-table-column>
+              <el-table-column label="备注" >
+              </el-table-column>  
+            </el-table>-->
+             <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
+              <el-divider style="width:100%;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">3.来时路径表：</i></el-divider>
+            </el-col>
+           <el-table :data="trafficList" v-if="table1" height="240">
+              <el-table-column label="出行方式" prop="func" width="70px;" >
+              </el-table-column> 
+              <el-table-column label="出发日期" prop="toDate" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发时间" prop="toTime" width="77px">
+              </el-table-column> 
+              <el-table-column label="出发地" prop="toPlace">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools">
+              </el-table-column> 
+              <el-table-column label="车班次" prop="trafficNumber">
+              </el-table-column> 
+              <el-table-column label="目的地" prop="arrivePlace">
+              </el-table-column> 
+              <el-table-column label="到达日期" prop="arriveDate">
+              </el-table-column> 
+              <el-table-column label="到达时间" prop="arriveTime" width="100%;">
+              </el-table-column> 
+            </el-table>
+            <el-table :data="trafficList" v-if="table2" height="80">
+              <el-table-column label="出行方式" prop="func" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发日期" prop="toDate" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发时间" prop="toTime" width="77px;">
+              </el-table-column> 
+              <el-table-column label="出发地" prop="toPlace">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools1">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber1">
+              </el-table-column> 
+              <el-table-column label="中转地" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+            </el-table>
+             <el-table :data="trafficList" v-if="table2" height="160">
+              <el-table-column width="70px;" >
+              </el-table-column> 
+              <el-table-column  width="70px;">
+              </el-table-column> 
+              <el-table-column  width="77px;">
+              </el-table-column> 
+              <el-table-column label="中转地" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools2">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber2">
+              </el-table-column> 
+              <el-table-column label="目的地" prop="arrivePlace">
+              </el-table-column> 
+              <el-table-column label="到达日期" prop="arriveDate">
+              </el-table-column> 
+              <el-table-column label="到达时间" prop="arriveTime" width="100%;">
+              </el-table-column> 
+            </el-table>
+            <el-table :data="trafficList" v-if="table3" height="80">
+              <el-table-column label="出行方式" prop="func" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发日期" prop="toDate" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发时间" prop="toTime" width="77px;">
+              </el-table-column> 
+              <el-table-column label="出发地" prop="toPlace">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools1">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber1">
+              </el-table-column> 
+              <el-table-column label="中转地1" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+            </el-table>
+             <el-table :data="trafficList" v-if="table3"  height="80">
+              <el-table-column width="70px;" >
+              </el-table-column> 
+              <el-table-column  width="70px;">
+              </el-table-column> 
+              <el-table-column  width="77px;">
+              </el-table-column> 
+              <el-table-column label="中转地1" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools2">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber2">
+              </el-table-column> 
+              <el-table-column label="中转地2" prop="toPlace20">
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+              <el-table-column>
+              </el-table-column> 
+            </el-table>
+            <el-table :data="trafficList" v-if="table3" height="80">
+              <el-table-column width="70px;" >
+              </el-table-column> 
+              <el-table-column  width="70px;">
+              </el-table-column> 
+              <el-table-column  width="77px;">
+              </el-table-column> 
+              <el-table-column label="中转地2" prop="toPlace20">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools3">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber3">
+              </el-table-column> 
+              <el-table-column label="目的地" prop="arrivePlace">
+              </el-table-column> 
+              <el-table-column label="到达日期" prop="arriveDate">
+              </el-table-column> 
+              <el-table-column label="到达时间" prop="arriveTime" >
+              </el-table-column> 
+            </el-table>
+             <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
+              <el-divider style="width:100%;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">4.离场登记表：</i></el-divider>
+            </el-col>
+            
+            
+             <el-table :data="infoList" border style="width:893px;">
+                <el-table-column
+                prop="arrivalDate1" label="到达日期" width="80px">
+               </el-table-column>
+                <el-table-column
+                prop="departureDate1" label="预离日期" width="80">
+               </el-table-column>
+                <el-table-column
+                prop="days" label="入住天数" width="50px">
+               </el-table-column>
+               <el-table-column
+                prop="commonName" label="姓名" width="55px">
+               </el-table-column>
+               <el-table-column
+                prop="dharmaName" label="法名" width="45px">
+               </el-table-column>
+               <el-table-column
+                prop="gender" label="性别" width="35px">
+               </el-table-column>
+                <el-table-column
+                prop="source" label="来源地" width="100px;">
+               </el-table-column>
+               <el-table-column
+                prop="phoneNumber" label="电话" width="90">
+               </el-table-column>
+               <el-table-column
+                prop="emergencyPhone" label="紧急电话" width="90">
+               </el-table-column>
+               <el-table-column
+                prop="IdNumber" label="身份证" width="77">
+               </el-table-column>
+               <el-table-column
+                prop="references" label="介绍人" width="55px">
+               </el-table-column>
+               <el-table-column
+                prop="guarantor" label="担保人" width="45px">
+               </el-table-column>
+                <el-table-column
+                prop="causalMoney" label="金额" width="45px">
+               </el-table-column>
+                <el-table-column
+                prop="agent" label="经办人" width="45px">
+               </el-table-column>
+            </el-table>
+
+
+
+            <!--<el-table :data="gridData">
+             <el-table-column property="date" label="日期" width="150"></el-table-column>
+             <el-table-column property="name" label="姓名" width="200"></el-table-column>
+             <el-table-column property="address" label="地址"></el-table-column>
+            </el-table>-->
+           
+            <button @click="printInfo">跳转到打印组件</button>
+        
+         </el-dialog>  
+      </div>
 
           
-          <el-dialog title="登记信息预览" :visible.sync="dialogTableVisible" width="9.5rem">
+
+
+          <!--打印
+          <el-dialog title="提示" :visible.sync="dialogVisible" width="10rem" :before-close="handleClose">
+
+            <el-dialog title="登记信息预览" :visible.sync="dialogTableVisible" width="20rem">
           
 
                <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
@@ -844,29 +1310,142 @@
               </el-table-column> 
               <el-table-column label="数量" prop="num">
               </el-table-column> 
+              <el-table-column label="归还" >
+              </el-table-column>
+              <el-table-column label="备注" >
+              </el-table-column>  
             </el-table>
              <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
-              <el-divider style="width:9.5rem;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">3.来时路径登记：</i></el-divider>
+              <el-divider style="width:9.5rem;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">3.来时路径表：</i></el-divider>
             </el-col>
-           <el-table :data="trafficList">
+           <el-table :data="trafficList" v-if="table1">
+              <el-table-column label="出行方式" prop="func" width="60px;" >
+              </el-table-column> 
+              <el-table-column label="出发日期" prop="toDate" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发时间" prop="toTime" width="77px">
+              </el-table-column> 
               <el-table-column label="出发地" prop="toPlace">
               </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools">
+              </el-table-column> 
+              <el-table-column label="车班次" prop="trafficNumber">
+              </el-table-column> 
+              <el-table-column label="目的地" prop="arrivePlace">
+              </el-table-column> 
+              <el-table-column label="到达日期" prop="arriveDate">
+              </el-table-column> 
+              <el-table-column label="到达时间" prop="arriveTime" width="100%;">
+              </el-table-column> 
             </el-table>
-            <!--<el-table :data="gridData">
+            <el-table :data="trafficList" v-if="table2">
+              <el-table-column label="出行方式" prop="func" width="60px;">
+              </el-table-column> 
+              <el-table-column label="出发日期" prop="toDate" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发时间" prop="toTime" width="77px;">
+              </el-table-column> 
+              <el-table-column label="出发地" prop="toPlace">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools1">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber1">
+              </el-table-column> 
+              <el-table-column label="中转地" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+            </el-table>
+             <el-table :data="trafficList" v-if="table2">
+              <el-table-column width="60px;" >
+              </el-table-column> 
+              <el-table-column  width="70px;">
+              </el-table-column> 
+              <el-table-column  width="77px;">
+              </el-table-column> 
+              <el-table-column label="中转地" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools2">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber2">
+              </el-table-column> 
+              <el-table-column label="目的地" prop="arrivePlace">
+              </el-table-column> 
+              <el-table-column label="到达日期" prop="arriveDate">
+              </el-table-column> 
+              <el-table-column label="到达时间" prop="arriveTime" width="100%;">
+              </el-table-column> 
+            </el-table>
+            <el-table :data="trafficList" v-if="table3">
+              <el-table-column label="出行方式" prop="func" width="60px;">
+              </el-table-column> 
+              <el-table-column label="出发日期" prop="toDate" width="70px;">
+              </el-table-column> 
+              <el-table-column label="出发时间" prop="toTime" width="77px;">
+              </el-table-column> 
+              <el-table-column label="出发地" prop="toPlace">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools1">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber1">
+              </el-table-column> 
+              <el-table-column label="中转地1" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+            </el-table>
+             <el-table :data="trafficList" v-if="table3">
+              <el-table-column width="60px;" >
+              </el-table-column> 
+              <el-table-column  width="70px;">
+              </el-table-column> 
+              <el-table-column  width="77px;">
+              </el-table-column> 
+              <el-table-column label="中转地1" prop="toPlace1">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools2">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber2">
+              </el-table-column> 
+              <el-table-column label="中转地2" prop="toPlace20">
+              </el-table-column> 
+              <el-table-column >
+              </el-table-column> 
+              <el-table-column>
+              </el-table-column> 
+            </el-table>
+            <el-table :data="trafficList" v-if="table3">
+              <el-table-column width="60px;" >
+              </el-table-column> 
+              <el-table-column  width="70px;">
+              </el-table-column> 
+              <el-table-column  width="77px;">
+              </el-table-column> 
+              <el-table-column label="中转地2" prop="toPlace20">
+              </el-table-column> 
+              <el-table-column label="交通工具" prop="toTrafficTools3">
+              </el-table-column> 
+              <el-table-column label="车/班次" prop="trafficNumber3">
+              </el-table-column> 
+              <el-table-column label="目的地" prop="arrivePlace">
+              </el-table-column> 
+              <el-table-column label="到达日期" prop="arriveDate">
+              </el-table-column> 
+              <el-table-column label="到达时间" prop="arriveTime" width="100%;">
+              </el-table-column> 
+            </el-table>
+            <el-table :data="gridData">
              <el-table-column property="date" label="日期" width="150"></el-table-column>
              <el-table-column property="name" label="姓名" width="200"></el-table-column>
              <el-table-column property="address" label="地址"></el-table-column>
-            </el-table>-->
-         </el-dialog>  
-
-
-          
-
-
-          <!--打印预览-->
-          <el-dialog class="" title="提示" :visible.sync="dialogVisible" width="9rem" :before-close="handleClose">
-
-            如确认无误，请联系管理员打印清单，仔细阅读背面承诺书，签字，按单领取物品。
+            </el-table>
+               </el-dialog>  
+        </el-dialog>
+         
 
 
 
@@ -876,39 +1455,100 @@
 
 
 
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="submitSuccess">确 定</el-button>
-            </span>
-          </el-dialog>
-
-
-
-
-
-
-
-
-
-
-
-
+-->
 
         </el-col>
 
-        <!--
-<div class="print">
-       // 这是展示的需要打印的内容，给用户看的。
-    </div>
-    <div ref="print" class="recordImg" id="print">
-       //这里是需要打印的内容，出现在打印预览的界面，这里的样式需要写在 @media print {}里面 如果需要设置预览页规则，页脚等样式 @page {}
-       <div class="no-print">不需要打印的内容</div>
-       <div class="do-not-print-div">不要打印我</div>
-       <button @click="printContext">打印</button>
-    </div>
--->
+      <!--打印功能
+         <div ref="print">
+          <div class="printArea">
+
+            <el-col>
+              <span style="font-size:30px;font-weight: 700;">2020国庆来寺人员登记信息表</span>
+            </el-col>
+            <el-col :span="23" :offset="1"  style="margin-bottom:10px;">
+              <el-divider style="width:9.5rem;" content-position="left"><i style="font-weight:400;font-size:13px;color:#DAA020;">1.基本信息表：</i></el-divider>
+            </el-col>
+            <el-table :data="infoList" width="100%"height="100%" border >
+                <el-table-column
+                prop="arrivalDate1" label="到达日期" width="80px">
+               </el-table-column>
+                <el-table-column
+                prop="departureDate1" label="预离日期" width="80px">
+               </el-table-column>
+                <el-table-column
+                prop="days" label="入住天数" width="50px;">
+               </el-table-column>
+               <el-table-column
+                prop="commonName" label="姓名" width="55px">
+               </el-table-column>
+               <el-table-column
+                prop="dharmaName" label="法名" width="40px">
+               </el-table-column>
+               <el-table-column
+                prop="gender" label="性别" width="40px;">
+               </el-table-column>
+                <el-table-column
+                prop="source" label="来源地" width="100px;">
+               </el-table-column>
+               <el-table-column
+                prop="phoneNumber" label="电话" width="90px;">
+               </el-table-column>
+               <el-table-column
+                prop="emergencyPhone" label="紧急电话" width="90px;">
+               </el-table-column>
+               <el-table-column
+                prop="IdNumber" label="身份证" width="100px">
+               </el-table-column>
+               <el-table-column
+                prop="references" label="介绍人" width="55px">
+               </el-table-column>
+               <el-table-column
+                prop="guarantor" label="担保人" width="55px">
+               </el-table-column>
+                <el-table-column
+                prop="causalMoney" label="金额" width="55px">
+               </el-table-column>
+                <el-table-column
+                prop="agent" label="经办人" width="55px">
+               </el-table-column>
+            </el-table>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+           
+         </div>
+    
+
+
+    打印功能-->
 
       </el-row>
 
@@ -926,7 +1566,7 @@
 
     <Foot></Foot>
 
-
+    
 
  
   </div>
@@ -1010,6 +1650,9 @@
 
         return data;
       };
+
+      
+
 
       //身份证验证
       const idCardValidity = (rule, code, callback) => {
@@ -1117,6 +1760,7 @@
       }
 
       return {
+        search1:"",
         func:"",
         rules1:{
           toDates:[
@@ -1138,7 +1782,12 @@
             }
           ]
         },
+        infoAllList:[],
         daysNote:"",
+        daysNote1:"",
+        table1:false,
+        table2:false,
+        table3:false,
         btns:false,
         dialogVisible: false,
         showCard1: false,
@@ -1165,8 +1814,11 @@
             }
           }]
         },
+        show00:false,
         disabled2:true,
         label: [],
+        tableData2:[],
+        show0:false,
         options: [],
         options2: [],
         options:[],
@@ -1179,6 +1831,7 @@
         mode: "transfer",
         fonticonSrc2:"",
         gridDatas:[],
+        edit:false,
         fromData: [{
             id: "1",
             pid: 0,
@@ -1304,7 +1957,7 @@
 
 
         ],
-        dialogTableVisible:false,
+        dialogTableVisible1:false,
         trafficOptions1: [{
             value: '火车',
             label: '火车'
@@ -1386,6 +2039,7 @@
 
 
         ],
+        money:"",
         disabledRuleForm3:false,
         disabledRuleForm4:false,
         disabledRuleForm5:false,
@@ -1404,6 +2058,8 @@
         InfoList:[],
         data: generateData(),
         value: [1, 4],
+        flagHead:true,
+        isOK:'ok',
         ruleForm: {
           commonName: '',
           dharmaName: '',
@@ -1461,6 +2117,85 @@
           arriveDates:'',
           arrivePlace:[12,0,7],
           func:''
+
+        },
+        ruleForm0:{
+          commonName:'',
+          dharmaName:'',
+          departureDate1:'',
+          departureDate2:'',
+          departureDate3:'',
+          departureDate4:'',
+          days:'',
+          arrival2:'',
+          day2:'',
+          day:'0',
+          causalMoney:'',
+          moneyFunc:'返还本人',
+          money:'',
+          agent1:''
+        },
+        rules0:{
+          commonName:[{
+            required:true,
+            message:"姓名不能为空！",
+            trigger:'blur'
+          }],
+          dharmaName:[{
+            required:true,
+            message:"法名不能为空,没有写无！",
+            trigger:'blur'
+          }],
+          departureDate1:[{
+            required:true,
+            message:"日期不能为空！",
+            trigger:'blur'
+          }],
+          departureDate3:[{
+            required:true,
+            message:"日期不能为空！",
+            trigger:'blur'
+          }],
+          arrival2:[{
+            required:true,
+            message:"日期不能为空！",
+            trigger:'blur'
+          }],
+          days:[{
+            required:true,
+            message:"天数不能为空！",
+            trigger:'blur'
+          }],
+          day2:[{
+            required:true,
+            message:"天数不能为空！",
+            trigger:'blur'
+          }],
+          day:[{
+            required:true,
+            message:"天数不能为空！",
+            trigger:'blur'
+          }],
+          causalMoney:[{
+            required:true,
+            message:"预交金额不能为空！",
+            trigger:'blur'
+          }],
+          moneyFunc:[{
+            required:true,
+            message:"押金去向不能为空！",
+            trigger:'blur'
+          }],
+          money:[{
+            required:true,
+            message:"返还金额不能为空！",
+            trigger:'blur'
+          }],
+          agent1:[{
+            required:true,
+            message:"登记人不能为空！",
+            trigger:'blur'
+          }],
 
         },
         toTrafficTools: '',
@@ -1721,6 +2456,7 @@
         navSpans: '24',
         navOffsets: '0',
         activeIndex: '1',
+        edit1:false,
         show1: true,
         show2: false,
         show3: false,
@@ -1747,6 +2483,7 @@
         show100:false,
         trafficList:[],
         submitEndBtn:false,
+        weatherData:"",
         options3:[],
         options4:[],
         options5:[],
@@ -1762,8 +2499,22 @@
     
     },
     created() {
-
-       axios.get('http://192.168.43.14:8081/static/area.json', {
+    console.log(this.$store.state.commonName)
+       axios({
+             method: 'get',
+             url:'https://www.tianqiapi.com/free/day?appid=75698768&appsecret=7LyHELsc&city=福州'
+        }).then((response) => {
+            console.log(response);//查看接口返回的数据
+           // this.wea=response.data.wea;//天气
+           // this.tem=response.data.tem;//温度
+           // this.wea_img=response.data.wea_img;//图标名称
+            console.log(response.data)
+            this.weatherData = response.data;
+            }, function(response) {
+            console.log("错误信息：" + response)
+        });
+        
+       axios.get('http://192.168.43.119:8081/static/area.json', {
         params: {
           title: '成功'
         }
@@ -1841,10 +2592,11 @@
           this.showCard2 = false;
             this.disabledEnd = true;
       },
+      
       //计算时间差几天
       Days(){
         console.log("进来了哦。")
-        var aDate,oDate1,oDate2,iDays
+      /*  var aDate,oDate1,oDate2,iDays
         var sDate1 = this.ruleForm.arrivalDate1
         var sDate2 = this.ruleForm.departureDate1
         var aDate = sDate1.split("-")
@@ -1862,6 +2614,28 @@
         console.log(oDate1>oDate2)
         //this.ruleForm.days = iDays + 1;
         console.log(this.daysNote)
+*/
+
+      
+         var sDate1 = this.ruleForm.arrivalDate1
+        var sDate2 = this.ruleForm.departureDate1
+         console.log(sDate1)
+         console.log(sDate2)
+        sDate1 = Date.parse(sDate1);
+        sDate2 = Date.parse(sDate2);
+      var  dateSpan = sDate2 - sDate1;
+      var  dateSpan = Math.abs(dateSpan);
+      var   iDays = Math.floor(dateSpan/(24*3600*1000))+1;
+        console.log(iDays)
+        this.ruleForm.days = iDays;
+         this.ruleForm.causalMoney = iDays * 50  + 100;
+        console.log(this.ruleForm.days)
+        if(sDate1>sDate2){
+        this.showMessage("error,Info,不符逻辑，请仔细填写！");
+        }
+
+
+
         
       },
       open1() {
@@ -1889,7 +2663,7 @@
       },
       commonNameChange() {
        // console.log('ok')
-
+        console.log(this.$store.state.commonName)
         axios.post('api/datas/commonNameChange', {
           commonName: this.ruleForm.commonName
         }).then((result) => {
@@ -1913,6 +2687,7 @@
       handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
+            this.$router({param:'/buddhish'})
             done();
           })
           .catch(_ => {});
@@ -2001,7 +2776,7 @@
       areaHandleChange2(item) {
         // this.ruleForm.source = this.source
 
-        //this.ruleForm.source = this.$refs['myCascader2'].getCheckedNodes()[0].label
+        this.ruleForm.source = this.$refs['myCascader2'].getCheckedNodes()[0].label
 
         // console.log(this.$refs['myCascader2'].getCheckedNodes()[0])
         // console.log(this.$refs['myCascader2'].getCheckedNodes()[0].pathLabels)
@@ -2015,11 +2790,11 @@
 
       },
       submitForm2() {
-         
-        
+        console.log(this.$store.state._id);
+        console.log()
         this.show100 = true;
         this.showBtn100 = true;
-        const string = this.$store.state.commonName;
+        const string = this.$store.state._id;
         const strs = string.split(" ")
        
         this.goodsList.unshift(string)
@@ -2156,8 +2931,8 @@
         }
      //   console.log(list2)
         this.goodsList = list2
-        console.log(this.goodsList)
-        console.log(this.toData);
+        //console.log(this.goodsList)
+        //console.log(this.toData);
       },
       // 监听穿梭框组件移除
 
@@ -2259,12 +3034,12 @@
         this.disabled2 = false;
         this.disabledRuleForm3 = true;
         this.active = 3;
-        var arr = new Array(this.$store.state.commonName,this.ruleForm3.func,this.ruleForm3.toDate,this.ruleForm3.toTime,this.ruleForm3.toPlace);
-        var arr1 = new Array(this.$store.state.commonName,this.ruleForm3)
+        var arr = new Array(this.$store.state._id,this.ruleForm3.func,this.ruleForm3.toDate,this.ruleForm3.toTime,this.ruleForm3.toPlace);
+        var arr1 = new Array(this.$store.state._id,this.ruleForm3)
         console.log(this.ruleForm3)
         console.log(arr)
         console.log(arr1)
-        //const string = this.$store.state.commonName;
+        //const string = this.$store.state._id;
         //const strs = string.split(" ")
        
        // this.trafficList.unshift(string)
@@ -2307,7 +3082,7 @@
         this.ruleForm4.toTrafficTools2 = this.tools[this.ruleForm4.toTrafficTools2];
        
         this.active = 3;
-        var arr1 = new Array(this.$store.state.commonName,this.ruleForm4)
+        var arr1 = new Array(this.$store.state._id,this.ruleForm4)
         console.log(this.ruleForm4)
         console.log(arr1)
         //const string = this.$store.state.commonName;
@@ -2356,7 +3131,7 @@
         this.ruleForm5.toTrafficTools2 = this.tools[this.ruleForm5.toTrafficTools2];
         this.ruleForm5.toTrafficTools3 = this.tools[this.ruleForm5.toTrafficTools3];
        
-        var arr1 = new Array(this.$store.state.commonName,this.ruleForm5)
+        var arr1 = new Array(this.$store.state._id,this.ruleForm5)
         console.log(this.ruleForm5)
         console.log(arr1)
         let data = arr1;
@@ -2379,15 +3154,51 @@
         })
 
       }
+      //离场登记表
+      if(formName == 'ruleForm0'){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var data = this.ruleForm0;
+            let data = {
+              "commonName":this.ruleForm0.commonName,
+              "agent1":this.ruleForm0.agent1,
+              "departureDate1":this.ruleForm0.departureDate1,
+              "departureDate3":this.ruleForm0.departureDate3,
+              "days":this.ruleForm0.days,
+              "moneyFunc":this.ruleForm0.moneyFunc,
+              "money":this.money,
+              "day2":this.ruleForm0.money,
+              "isOK":'OK'
+            
+            }
+            console.log(data)
+            axios.post('/api/datas/update',data).then((result)=>{
+              let res = result.data;
+              if(res.status == '400'){
+                this.showMessage("success,Info,离场登记成功！")
+              
+
+              }
+              })
+
+
+          } else {
+            console.log('error submit!!');
+            this.$.showMessage("error,Info,请填完整后在提交。")
+          }
+        });
+      }
+
+
+
+
       //基本信息表单
       if(formName == 'ruleForm'){
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.active = 1;
-            //console.log(this.ruleForm);
-            //console.log(this.commonName);
+            
             let data1 = this.ruleForm;
-            //console.log(data);
             const time1 = this.ruleForm.arrivalDate2.toLocaleTimeString()
             const time2 = this.ruleForm.departureDate2.toLocaleTimeString()
             let data = {
@@ -2408,9 +3219,9 @@
               "causalMoney": this.ruleForm.causalMoney,
               "days": this.ruleForm.days,
               "sourceArray": this.ruleForm.source,
-       //       "goodsList":[]
-
+       
             }
+            console.log(data)
             axios.post('/api/datas/datas', data).then((result) => {
               let res = result.data;
               if (res.status == 100) {
@@ -2419,10 +3230,11 @@
                 this.showForm2 = true;
                 this.show4 = true;
                 this.disabled = true;
-                this.$store.state.commonName = res.res.commonName;
-                console.log(res.res)
-                console.log(this.$store.state.commonName)
-
+                console.log(res.res._id)
+               // console.log(res.res)
+               // this.$store.state.commonName = res.res.commonName;
+                this.$store.state._id = res.res._id;
+                console.log(this.$store.state._id);
               }
 
 
@@ -2432,10 +3244,14 @@
                 this.showForm2 = true;
                 this.show4 = true;
                 this.disabled = true;
-                this.$store.state.commonName = res.res.commonName;
+              //  this.$store.state.commonName = res.res.commonName;
                // console.log(res)
                // console.log(res.res.commonName)
                // console.log(this.$store.state.commonName)
+               console.log(res.res._id)
+                console.log(res.res)
+                     this.$store.state._id = res.res._id;
+                console.log(this.$store.state._id);
               }
 
 
@@ -2459,6 +3275,11 @@
        if(formName == 'ruleForm'){
         this.$refs[formName].resetFields();
         this.active = '0';
+       }
+       if(formName == 'ruleForm0'){
+        this.$refs[formName].resetFields();
+        this.edit = false;
+     
        }
        if(formName == 'ruleForm3'){
         this.$refs[formName].resetFields();
@@ -2487,12 +3308,15 @@
        }
       },
       
-      submitEnd(){
-        this.dialogTableVisible = true;
-        let data ={"commonName":this.$store.state.commonName} 
-        if(this.$store.state.commonName){
-          console.log('hhhh')
-          axios.post('/api/datas/datas', data).then((result) => {
+      submitEnd1(){
+        //this.$router.push({path:'/print'})
+         this.dialogTableVisible1 = true;
+        // console.log('jinlaile')
+       //this.flagHead = true;
+         let data ={"_id":this.$store.state._id} 
+        if(this.$store.state._id){
+          //console.log('hhhh')
+          axios.post('/api/datas/datasList',data).then((result) => {
           let res = result.data;
        
           this.gridDatas = res.res
@@ -2502,7 +3326,7 @@
           for(let i in array){
             arr.push(array[i]);
           }
-          console.log(arr)
+          console.log(obj1)
           
           var infoList1 = [
                   {
@@ -2525,9 +3349,10 @@
                   }
           ]
           var goodsList1 = [];
+       
            goodsList1 = arr[1];
        //    infoList1 = JSON.parse(JSON.stringify(infoList1));
-          var trafficList1 = arr[2][0]
+          var trafficList1 = arr[2]
           // console.log(infoList1[0])
           // console.log(goodsList1)
          //  console.log(trafficList1[0])
@@ -2536,32 +3361,27 @@
           //cosole.log(str);
             this.infoList = infoList1;
             this.goodsList = goodsList1;
+            if(trafficList1[0].func == '直达'){
+              this.table1 = true;
+              this.table2 = false;
+              this.table3 = false;
+            }
+            if(trafficList1[0].func == '中转1次'){
+              this.table2 = true;
+              this.table1 = false;
+              this.table3 = false;
+            }
+            if(trafficList1[0].func == '中转2次'){
+              this.table3 = true;
+              this.table1 = false;
+              this.table2 = false;
+            }
             this.trafficList = trafficList1;
-            console.log(this.trafficList)
-           //this.gridDatas = array;
-
-
-        //  this.gridDatas = [infoList1[0],trafficList,goodsList1];
-       //   console.log(this.gridDatas);
-         // console.log(infoList1[0]);
-
-        //   console.log(obj1)
-
-
-
-        //  this.goodsList = obj1.goodsList;
-        //  this.trafficList = obj1.trafficList[0];
-        //  this.gridDatas = obj1.trafficList[0];
-
+           
           
-         // console.log(obj1)
-         // console.log(this.goodsList)
-          //   console.log(this.trafficList)
-         // console.log(trafficList)
-          //console.log(obj1)
           if(res.status == 140){
              this.showMessage("success,Info,数据获取成功！");
-             
+
           }
 
         })
@@ -2569,7 +3389,13 @@
           console.log('我的')
         }
         
-   
+
+      },
+      change(e){
+        this.$forceUpdate()
+      },
+      printInfo(){
+        this.$router.push({path:'/print'})
       },
       
       openMessage() {
@@ -2592,8 +3418,10 @@
         this.active = 1;
       },
       addDatas() {
+        this.show0 = false;
         this.show1 = false;
         this.show3 = true;
+        this.show00 = false;
       },
       backTop() {
         const that = this
@@ -2618,14 +3446,213 @@
       },
       showSearch() {
         this.show2 = true;
+        this.show3 = false;
         this.show1 = false;
+        this.show00 = true;
+        //数据列表
+         axios.post('api/datas/getDataList').then((result)=>{
+          if(result.data.status == 0){
+          var arr = [];
+          for(let i in JSON.parse(JSON.stringify(result.data.res))){
+            this.infoAllList.push(JSON.parse(JSON.stringify(result.data.res))[i]);
+          }
+          console.log(result.data.res)
+          //this.list = result.data.res;
+      
+         }
+      })
+
+         
+
+
+      },
+      weather(){
+        axios({
+             method: 'get',
+             url:'https://www.tianqiapi.com/free/day?appid=75698768&appsecret=7LyHELsc&city=福州'
+        }).then((response) => {
+            console.log(response);//查看接口返回的数据
+           // this.wea=response.data.wea;//天气
+           // this.tem=response.data.tem;//温度
+           // this.wea_img=response.data.wea_img;//图标名称
+            console.log(response.data)
+            }, function(response) {
+            console.log("错误信息：" + response)
+        });
+        
       },
       showDataIndex() {
         this.show3 = false;
         this.show2 = false;
         this.show1 = true;
-      }
+        this.show00 = false;
+      },
+      prints () {
+      this.$print(this.$refs.print)
     },
+    leave(){
+      this.show1 = false;
+      this.show0 = true;
+      this.show3 = false;
+    },
+    getInfo(){
+       axios.post('api/datas/getInfo', {
+          commonName: this.ruleForm0.commonName
+        }).then((result) => {
+
+          let res = result.data
+           if (res.status == 191) {
+            this.showMessage("error,Info,您还没有入场登记，因此无法完成离场登记。")
+
+          }
+          if(res.status == 190){
+            console.log(res.res)
+            console.log(res.res.dharmaName)
+            this.edit = true;
+            this.ruleForm0= res.res
+            console.log(this.ruleForm0)
+            console.log(res.res.isOK)
+            if(res.res.isOK == "OK"){
+            this.edit1 = true;
+              this.showMessage("error,Info,您已经离场登记过了，不可以重新登记，如有错误请联系管理员修改。")
+            }
+          }
+
+        })
+    },
+    //计算时间差几天
+      Days1(){
+       /* console.log("进来了哦。")
+        console.log(this.ruleForm0.departureDate1);
+        var aDate,oDate1,oDate2,iDays
+        var sDate1 = this.ruleForm0.departureDate1
+        var sDate2 = this.ruleForm0.departureDate3
+        var aDate = sDate1.split("-")
+        oDate1 = new Date(aDate[0],aDate[1],aDate[2])
+        aDate   =  sDate2.split("-")  
+        oDate2 = new Date(aDate[0] , aDate[1] , aDate[2])  
+        if(oDate1<=oDate2){
+           this.daysNote1   =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24)    //把相差的毫秒数转换为天数  
+           this.ruleForm0.day = this.daysNote1;
+           console.log(this.daysNote1)
+         // this.ruleForm.causalMoney = this.daysNote * 50  + 100;
+           }else{
+              this.showMessage("error,Info,不符逻辑，请仔细填写！");
+           }
+          console.log(iDays)
+          console.log(this.ruleForm0.day)
+        console.log(oDate1>oDate2)
+        //this.ruleForm.days = iDays + 1;
+        console.log(this.daysNote1)*/
+
+        console.log(this.ruleForm0.departureDate1)
+       console.log(this.ruleForm0.departureDate3)
+
+        var sDate1 = this.ruleForm0.departureDate1
+        var sDate2 = this.ruleForm0.departureDate3
+
+        sDate1 = Date.parse(sDate1);
+        sDate2 = Date.parse(sDate2);
+        var dateSpan = sDate2 - sDate1;
+        var dateSpan = Math.abs(dateSpan);
+        var iDays = Math.floor(dateSpan/(24*3600*1000));
+        //console.log(iDays)
+        this.daysNote1 = iDays
+        //少住了
+        if(sDate1>sDate2){
+            //提早离开
+            //返还金额：+ daysNote1 差异天数  
+          //  console.log(this.ruleForm0.days)
+               this.ruleForm0.day2 = parseInt(this.ruleForm0.days) - parseInt(this.daysNote1)
+            this.daysNote1 = -iDays
+            console.log(this.daysNote1)
+            
+           // this.ruleForm0.money = Math.abs(this.daysNote1) * 50 +100
+           if(this.ruleForm0.day2 <= 0 ){
+            this.showMessage("error,Info,请核实后再填写。")
+            alert("请重新填写实离时间。")
+           }
+
+          }
+          //正好
+        if(sDate1 == sDate2){
+        this.daysNote1 = 0;
+       // console.log(this.daysNote1)
+        this.ruleForm0.day2 = this.ruleForm0.days;
+       // this.ruleForm0.money = 100
+        //this.daysNote1 = 0;
+        }
+        //多住了
+        if(sDate1<sDate2){
+           this.daysNote1 = iDays
+           console.log(this.daysNote1)
+           this.ruleForm0.day2 = parseInt(this.ruleForm0.days) + parseInt(this.daysNote1)
+          //  this.ruleForm0.money = 100 - this.daysNote1 * 50
+        }
+       // console.log(this.ruleForm0.moneyFunc)
+         
+        },
+        filterHandler(value, row, column) {
+        const property = column['property'];
+        return row[property] === value;
+      },
+      indexMethod(index) {
+        return index+1 ;
+      },
+      moneyF(){
+        console.log(this.ruleForm0.moneyFunc)
+        console.log('moneyff')
+         var sDate1 = this.ruleForm0.departureDate1
+         var sDate2 = this.ruleForm0.departureDate3
+
+        sDate1 = Date.parse(sDate1);
+        sDate2 = Date.parse(sDate2);
+
+        //daysNote1 < 0   少住了，应该返钱
+        if(this.ruleForm0.moneyFunc == '返还本人'){
+
+          if(this.daysNote1<0){
+             this.money = -this.daysNote1 * 50 + 100;
+          }
+          if(this.daysNote1 == 0){
+         
+          this.money = 100
+               }
+          if(this.daysNote1>0){
+          this.money = 100 - this.daysNote1 * 50 ;
+          }
+      }
+      if(this.ruleForm0.moneyFunc == '转为因果'){
+          if(this.daysNote1<0){
+             this.money = -this.daysNote1 * 50  ;
+          }
+          if(this.daysNote1 == 0){
+         
+          this.money = 0
+          console.log(this.ruleForm0.money)
+           }
+          if(this.daysNote1>0){
+          this.money =  -this.daysNote1 * 50;
+          }
+      }
+      if(this.ruleForm0.moneyFunc == '转为供养'){
+          if(this.daysNote1<0){
+             this.money = -this.daysNote1 * 50 ;
+          }
+          if(this.daysNote1 == 0){
+         
+          this.money = 0
+          console.log(this.ruleForm0.money)
+           }
+          if(this.daysNote1>0){
+          this.money =  -this.daysNote1 * 50  ;
+          console.log("jinlaile")
+          console.log(typeof this.daysNote1)
+          console.log(typeof parseInt(this.daysNote1))
+          }
+      }
+    }
+  },
     components: {
       Head,
       Foot,
@@ -2673,6 +3700,28 @@
   .addDia .el-dialog {
     width: 1000px;
   }
+  .printArea{
+    width:1300px;
+    height:2000px;
+     display:block;
+    float:left;
 
+    position: absolute;left:0px;top:3300px;
+    
+  }
+  .customWidth{
+
+    width:2000px;
+  }
+  ._table{width: 100%; border-collapse: collapse; border:1px solid black;text-align: center}
+  ._table .thead  { border:1px solid #C1C1C1;font-size: 13px;    text-align: center;  font-weight:bold;}
+  ._table .td{ line-height: 20px; text-align: center; height: 18px;border: 1px solid  #C1C1C1;}
+  ._table td{border:1px solid   #C1C1C1;}
   .print {}
+  
+  .item {
+  margin-top: 10px;
+  margin-right: 40px;
+}
+
 </style>

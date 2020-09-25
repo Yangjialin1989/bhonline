@@ -14,6 +14,13 @@
 
         <span class="nav1 el-icon-s-custom" v-if="this.$store.state.nickNameFlag">{{ this.$store.state.nickName }}</span>
 
+        <span class="left" style="color:black;margin-left:3px;">{{weather.city}}</span>
+        <span class="left" style="color:black;margin-left:3px;">今日{{weather.update_time}}</span>
+        <span class="left" style="color:red;margin-left:3px;">{{weather.wea}}</span>
+        <span class="left" style="color:red;margin-left:3px;">{{weather.tem}}℃</span>
+        <span class="left" style="color:red;margin-left:3px;">{{weather.win}}</span>
+        <span class="left" style="color:red;margin-left:3px;">{{weather.win_speed}}</span>
+
       </el-col>
     </el-row>
     <el-row>
@@ -83,7 +90,7 @@
     name: 'Head',
     data() {
       return {
-
+        weather:''
 
       }
     },
@@ -91,6 +98,20 @@
 
     },
     created(){
+    axios({
+             method: 'get',
+             url:'https://www.tianqiapi.com/free/day?appid=75698768&appsecret=7LyHELsc&city=福州'
+        }).then((response) => {
+            console.log(response);//查看接口返回的数据
+           // this.wea=response.data.wea;//天气
+           // this.tem=response.data.tem;//温度
+           // this.wea_img=response.data.wea_img;//图标名称
+            console.log(response.data)
+            this.weather = response.data
+            }, function(response) {
+            console.log("错误信息：" + response)
+        });
+        
       this.layout()
     },
     methods: {

@@ -20,6 +20,7 @@ import Help from '@/views/Help'
 import Map from '@/views/Map'
 import Email from '@/views/Email'
 import Resetpwd from '@/views/Resetpwd'
+import Print from '@/views/Print'
 
 //components
 import BackTop from '@/components/BackTop'
@@ -108,6 +109,10 @@ export default new Router({
       path: '/resetpwd',
       name: 'Resetpwd',
       component: Resetpwd
+    },{
+      path: '/print',
+      name: 'Print',
+      component: Print
     }
   ]
 })

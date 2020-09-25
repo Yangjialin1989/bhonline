@@ -49,12 +49,12 @@ import Print from './plugins/print/Print'
 Vue.use(Print)
 
 //4.2print插件
-
-
+//import Print from 'vue-print-nb';
+//Vue.use(Print);
 
 
 //4.3vant挂载
-Vue.use(Button)
+Vue.use(Button);
 Vue.use(Rate);
 Vue.use(Sticky)
 Vue.use(Uploader);
