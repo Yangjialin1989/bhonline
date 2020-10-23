@@ -24,6 +24,7 @@ var listSchema = new Schema({
 	'goods_medicines_norms':String,
 	'goods_medicines_data_of_manufacture':String,
 	'goods_medicines_quality_guarantee_period':String,
-	'goods_medicines_limit':String
+	'goods_medicines_limit':String,
+	'tag':String
 })
 module.exports = mongoose.model('Lists',listSchema)

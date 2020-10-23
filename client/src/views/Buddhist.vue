@@ -1858,34 +1858,30 @@
                 id: "1-5",
                 pid: "1",
                 label: "草席"
-              }, {
+              },  {
                 id: "1-6",
-                pid: "1",
-                label: "垫背"
-              }, {
-                id: "1-7",
                 pid: "1",
                 label: "被子（上）"
               },
               {
-                id: "1-8",
+                id: "1-7",
                 pid: "1",
                 label: "被子（下）"
               }, {
-                id: "1-9",
+                id: "1-8",
                 pid: "1",
                 label: "被套"
               }, {
-                id: "1-10",
+                id: "1-9",
                 pid: "1",
                 label: "床单"
               },
               {
-                id: "1-11",
+                id: "1-10",
                 pid: "1",
                 label: "枕头"
               }, {
-                id: "1-12",
+                id: "1-11",
                 pid: "1",
                 label: "枕套"
               }
@@ -3593,8 +3589,9 @@
          
         },
         filterHandler(value, row, column) {
-        const property = column['property'];
-        return row[property] === value;
+      //  const prop
+
+                return row[property] === value;
       },
       indexMethod(index) {
         return index+1 ;

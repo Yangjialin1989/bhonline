@@ -25,6 +25,9 @@
                   <el-button :show="show3"  type="danger" @click="addGoods()">添加</el-button>
                 </el-menu-item>
                 </el-menu-item>
+                 <el-menu-item>
+                  <el-button :show="show3"  type="success" plain @click="checkLimitGoods()">过期筛查</el-button>
+                </el-menu-item>
               </el-menu>
 
               <van-notice-bar v-if="this.$store.state.nickNameFlag" mode="closeable" left-icon="volume-o" :text="textNote">
@@ -36,7 +39,13 @@
                  class="tb-edit" highlight-current-row
                    :data="tableData.filter(data => !search || data.goods_name.toLowerCase().includes(search.toLowerCase()))"
                     style="width: 100%"
+                    show-summary
                     height="850">
+                    <el-table-column fixed
+                      type="index"
+                      width="50">
+                    </el-table-column>
+
                     <el-table-column
                       fixed
                       prop="goods_name"
@@ -50,7 +59,45 @@
                     </el-table-column>
                     <el-table-column prop="goods_medicines_producer" label="生产商" width="200"></el-table-column>
 
-                    <el-table-column prop="goods_medicines_attr" label="物品类型" width="120"></el-table-column>
+                    <el-table-column column-key="goods_medicines_attr"
+
+            
+
+
+
+
+
+         
+
+                    :filters="[{text: '中药', value: '中药'},{text: '西药',value: '西药'},{text: '中西药', value: '中西药'},{text: '外用药品',value: '外用药品'},{text: '消毒药品', value: '消毒药品'},{text: '日化用品',value: '日化用品'},{text: '劳动用品', value: '劳动用品'},{text: '医用工具',value: '医用工具'},{text: '保健用品', value: '保健用品'},{text: '配件',value: '配件'},{text: '其他',value: '其他'}]"
+                 :filter-method="filterHandler"
+                      prop="goods_medicines_attr" label="物品类型" width="120"></el-table-column>
+                    
+                    <el-table-column
+                      column-key="goods_attr"
+                      :filters="[{text: '农用工具', value: '01(农用工具)'},{text: '厨房用具',value: '02(厨房用具)'},{text: '餐饮用具', value: '03(餐饮用具)'},{text: '卧具',value: '04(卧具)'},{text: '床上用品', value: '05(床上用品)'},{text: '办公用品',value: '06(办公用品)'},{text: '医疗用品', value: '07(医疗用品)'},{text:'药品',value:'08(药品)'},{text: '上师专用',value: '09(上师专用)'},{text: '清洁用品',value: '10(清洁用品)'},{text: '法具',value: '11(法具)'},{text: '电气工具',value: '12(电气工具)'},{text:'日化用品',value:'13(日化用品)'},{text: '消防用品',value: '14(消防用品)'}]"
+
+                      :filter-method="filterHandler2"
+                      prop="goods_attr"
+                      label="属性"
+                      width="120">
+                    </el-table-column>
+                    
+                    <el-table-column
+                    column-key="goods_position"
+
+                    :filters="[{text:'工具间',value:'01(工具间)'},{text:'请香处',value:'02(请香处)'},{text:'天王殿',value:'03(天王殿)'},{text:'天井',value:'04(天井)'},{text:'大雄宝殿',value:'05(大雄宝殿)'},{text:'厨房',value:'06(厨房)'},{text:'监控室',value:'07(监控室)'},{text:'斋堂',value:'08(斋堂)'},{text:'柴棚',value:'09(柴棚)'},{text:'男外寮',value:'10(男外寮)'},{text:'男内寮',value:'11(男内寮)'},{text:'女外寮',value:'12(女外寮)'},{text:'女内寮',value:'13(女内寮)'},{text:'男浴室',value:'14(男浴室)'},{text:'女浴室',value:'15(女浴室)'},{text:'帐篷',value:'16(帐篷)'},{text:'办公室',value:'17(办公室)'},{text:'伽蓝殿',value:'18(伽蓝殿)'},{text:'祖师殿',value:'19(祖师殿)'},{text:'尊客堂',value:'20(尊客堂)'},{text:'内观堂',value:'21(内观堂)'},{text:'土屋',value:'22(土屋'}]"
+                    :filter-method="filterHandler1"
+                      prop="goods_position"
+                      label="位置"
+                      width="120">
+                    </el-table-column>
+                    <el-table-column
+                      
+                      prop="goods_type"
+                      label="类别"
+                      width="120">
+                    </el-table-column>
                     <el-table-column prop="goods_keywords" label="关键字" width="120"></el-table-column>
                     <el-table-column prop="goods_desc" label="详情" width="300"></el-table-column>
                     <el-table-column prop="goods_medicines_use" label="使用方法" width="200"></el-table-column>
@@ -59,22 +106,6 @@
 
                    <div v-html="html1"></div>-->
                    </el-table-column>
-                    <el-table-column
-                      prop="goods_attr"
-                      label="属性"
-                      width="120">
-                    </el-table-column>
-                    <el-table-column
-                      prop="goods_type"
-                      label="类别"
-                      width="120">
-                    </el-table-column>
-                    <el-table-column
-                      prop="goods_position"
-                      label="位置"
-                      width="120">
-                    </el-table-column>
-
                     <el-table-column
                       prop="goods_price"
                       label="单价(RMB)"
@@ -97,11 +128,180 @@
 
 
                     </el-table-column>
+                    <el-table-column
+                      prop="tag"
+                      label="标签"
+                      width="100"
+                      :filters="[{ text: '过期可用', value: '过期可用' }, { text: '过期报废', value: '过期报废' }]"
+                      :filter-method="filterTag"
+                      filter-placement="bottom-end">
+                      <template slot-scope="scope">
+                        <el-tag
+                          :type="scope.row.tag === '过期可用' ? 'primary' : 'success'"
+                          disable-transitions>{{scope.row.tag}}</el-tag>
+                      </template>
+                    </el-table-column>
 
-
+                    <el-table-column label="操作" align="center" width="250">
+                      <template slot-scope="tableData">
+                        <el-button
+                          size="mini"
+                          class="config-btn"
+                          style="width:70px;"
+                          @click.native.prevent="editGroup(tableData.$index, tableData)"
+                        >编辑</el-button>
+                        <el-button
+                          class="blue-btn"
+                          size="mini"
+                          style="width:70px"
+                          @click.native.prevent="deleteGroup(tableData.$index, tableData)"
+                        >删除</el-button>
+                      </template>
+                    </el-table-column>
 
 
                   </el-table>
+
+                  <el-dialog title="编辑"
+                     :visible.sync="editFormVisible"
+                    
+                     class="edit-form"
+                     :before-close="handleClose">
+                      <el-form :label-position="labelPosition" label-width="80px" :model="goods" ref="goods" >
+                      <el-form-item label="属性:" prop="goods_attr">
+
+                        <el-select v-model="goods.goods_attr" placeholder="请选择" @change="blur1">
+                          <el-option v-for="item in attrs" :key="item.value" :label="item.label" :value="item.value">
+                            <span style="float: left">{{ item.label }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="类型:" prop="goods_type">
+                        <el-select v-model="goods.goods_type" placeholder="请选择">
+                          <el-option v-for="item in types" :key="item.value" :label="item.label" :value="item.value">
+                            <span style="float: left">{{ item.label }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="位置:" prop="goods_position">
+                        <el-select v-model="goods.goods_position" placeholder="请选择">
+                          <el-option v-for="item in positions" :key="item.value" :label="item.label" :value="item.value">
+                            <span style="float: left">{{ item.label }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="序列号:" prop="goods_sn">
+                        <el-input v-model="goods.goods_sn" @focus="random">
+                          <template slot="prepend">{{this.goods.goods_attr}}-{{this.goods.goods_type}}-{{this.goods.goods_position}}</template>
+
+                        </el-input>
+                      </el-form-item>
+                      <el-form-item label="名称:" prop="goods_name">
+                        <el-input v-model="goods.goods_name"></el-input>
+                      </el-form-item>
+                      <el-form-item label="数量(商品包装的最大单位):" prop="goods_number">
+                        <!--                    <el-input v-model="goods.goods_number"></el-input> -->
+                        <el-input-number v-model="goods.goods_number" @change="handleChange" :min="1" :max="300" label="描述文字"></el-input-number>
+
+                      </el-form-item>
+                      <el-form-item label="生产商:" v-if="flag3" prop="goods_number">
+                        <el-input v-model="goods.goods_medicines_producer"></el-input>
+                      </el-form-item>
+                      <el-form-item label="物品类型:" v-if="flag3" prop="goods_medicines_attr">
+                        <el-select v-model="goods.goods_medicines_attr" placeholder="请选择">
+                          <el-option v-for="item in medicines_types" :key="item.value" :label="item.label" :value="item.value">
+                            <span style="float: left">{{ item.label }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="使用方法:" v-if="flag3" prop="goods_medicines_use">
+                        <el-input v-model="goods.goods_medicines_use"></el-input>
+                      </el-form-item>
+                      <el-form-item label="规格:" v-if="flag3" prop="goods_medicines_norms">
+                        <el-input v-model="goods.goods_medicines_norms"></el-input>
+                      </el-form-item>
+                      <el-form-item label="生产日期:" v-if="flag3" prop="goods_medicines_data_of_manufacture">
+                        <el-date-picker v-model="goods.goods_medicines_data_of_manufacture" type="date" placeholder="选择日期">
+                        </el-date-picker>
+                      </el-form-item>
+                      <el-form-item label="保质期(年):" v-if="flag3" prop="goods_medcines_quality_guarantee_period">
+                        <el-input-number v-model="goods.goods_medicines_quality_guarantee_period" :precision="2" :step="0.1"
+                          :max="16">
+
+                        </el-input-number>
+                      </el-form-item>
+                      <el-form-item label="过期日期:" v-if="flag3" prop="goods_medicines_limit">
+                        <el-date-picker v-model="goods.goods_medicines_limit" type="date" placeholder="选择日期">
+                        </el-date-picker>
+                      </el-form-item>
+                      <el-form-item label="成本:" prop="goods_price">
+                        <el-input v-model="goods.goods_price">
+                          <template slot="append">RMB</template>
+                        </el-input>
+                      </el-form-item>
+                      <el-form-item label="关键字:" prop="goods_keywords">
+                        <el-autocomplete class="inline-input" v-model="goods.goods_keywords" :fetch-suggestions="querySearch"
+                          placeholder="请输入内容" @select="handleSelect"></el-autocomplete>
+                      </el-form-item>
+                      <el-form-item label="详情:" prop="goods_desc">
+                        <el-input type="textarea" autosize placeholder="请输入内容" v-model="goods.goods_desc"></el-input>
+                      </el-form-item>
+                      <el-form-item label="图片地址:" prop="goods_img">
+                        <el-input v-model="goods.goods_img"></el-input>
+                      </el-form-item>
+                      <el-form-item label="添加时间:" prop="goods_time">
+                        <el-date-picker v-model="goods.goods_add_time" type="datetime" placeholder="选择日期时间">
+                        </el-date-picker>
+                      </el-form-item>
+                      <el-form-item label="存在:" v-if="flag2" prop="goods_is_real">
+                        <el-switch v-model="goods.goods_is_real" active-color="#13ce66" inactive-color="#ff4949"
+                          active-value="1" inactive-value="0">
+                        </el-switch>
+                      </el-form-item>
+                      <el-form-item label="删除:" v-if="flag2">
+                        <el-switch v-model="goods.goods_is_delete" active-color="#13ce66" inactive-color="#ff4949"
+                          active-value="1" inactive-value="0">
+                        </el-switch>
+                      </el-form-item>
+                      <el-form-item label="最新:" v-if="flag2">
+                        <el-switch v-model="goods.goods_is_new" active-color="#13ce66" inactive-color="#ff4949"
+                          active-value="1" inactive-value="0">
+                        </el-switch>
+                      </el-form-item>
+                      <el-form-item label="最热:" v-if="flag2">
+                        <el-switch v-model="goods.goods_is_hot" active-color="#13ce66" inactive-color="#ff4949"
+                          active-value="1" inactive-value="0">
+                        </el-switch>
+                      </el-form-item>
+                      <el-form-item label="提供人:" prop="goods_admin">
+
+                        <el-transfer id="transfer1" v-model="goods.goods_admin" :data="data"></el-transfer>
+
+
+
+                      </el-form-item>
+                      <el-form-item label="统计人:" prop="goods_people">
+                        <el-input v-model="goods.goods_people"></el-input>
+                      </el-form-item>
+                      <el-form-item>
+                        <div>
+                          <el-radio v-model="tag" label="过期可用" border>过期可用</el-radio>
+                          <el-radio v-model="tag" label="过期报废" border>过期报废</el-radio>
+                        </div>
+                      </el-form-item>
+                    </el-form>
+
+                      <div slot="footer" class="dialog-footer">
+                          <el-button @click.native="handleCancel('editForm')">取消</el-button>
+                          <el-button type="primary" @click="onSubmit">添加新数据</el-button>
+                          <el-button type="primary" @click.native="handleUpdate('editForm')">更新原数据</el-button>
+                      </div>
+                  </el-dialog>
+                  
 
                <!-- 数据等级平台 -->
                   <div class="form_bg1 " v-if="show4">
@@ -177,7 +377,7 @@
                       </el-form-item>
                       <el-form-item label="保质期(年):" v-if="flag3" prop="goods_medcines_quality_guarantee_period">
                         <el-input-number v-model="goods.goods_medicines_quality_guarantee_period" :precision="2" :step="0.1"
-                          :max="6">
+                          :max="16">
 
                         </el-input-number>
                       </el-form-item>
@@ -352,6 +552,12 @@
 
         show3 : false,
         show4 :false,
+        editFormVisible: false, 
+        editForm:{
+          name:""
+        },
+        _id:'',
+        tag:'',
         medicines_types: [{
             value: '中药',
             label: 'Chinese medicine'
@@ -399,11 +605,16 @@
           {
             value: '危化品',
             label: 'Hazardous chemicals'
+          },
+          {
+            value: '书籍',
+            label: 'literature'
           }
         ],
         flag2: false,
         flag3: true,
         restaurants: [],
+        limitData:[],
         types: [{
             value: "001",
             label: "铁锹"
@@ -787,6 +998,118 @@
             value: "096",
             label: "铲子"
           },
+          {
+            value: "097",
+            label: "滤芯"
+          },
+          {
+            value: "098",
+            label: "火柴"
+          },
+          {
+            value: "099",
+            label: "台灯"
+          },
+          {
+            value: "100",
+            label: "计算器"
+          },
+          {
+            value: "101",
+            label: "电池"
+          },
+          {
+            value: "102",
+            label: "头灯"
+          },
+          {
+            value: "103",
+            label: "手电"
+          },
+          {
+            value: "104",
+            label: "桌布"
+          },
+          {
+            value: "105",
+            label: "拔罐器"
+          },
+          {
+            value: "106",
+            label: "键盘"
+          },
+           {
+            value: "107",
+            label: "菜籽"
+          },
+           {
+            value: "108",
+            label: "手机"
+          },
+          {
+            value: "109",
+            label: "适配器"
+          },
+          {
+            value: "110",
+            label: "硬盘"
+          },
+          {
+            value: "111",
+            label: "摄像头"
+          },
+          {
+            value: "112",
+            label: "碳粉盒"
+          },
+          {
+            value: "113",
+            label: "按摩器"
+          },
+          {
+            value: "114",
+            label: "调味瓶"
+          },
+          {
+            value: "115",
+            label: "书籍"
+          },
+          {
+            value: "116",
+            label: "床架"
+          },
+           {
+            value: "117",
+            label: "床板"
+          },
+           {
+            value: "118",
+            label: "草席"
+          },
+           {
+            value: "119",
+            label: "垫被"
+          },
+          {
+            value: "120",
+            label: "床单"
+          },
+          {
+            value: "121",
+            label: "被子"
+          },
+          {
+            value: "122",
+            label: "被罩"
+          },
+          {
+            value: "123",
+            label: "枕芯"
+          },
+          {
+            value: "124",
+            label: "枕套"
+          }
         ],
         positions:[
           {
@@ -933,10 +1256,19 @@
           {
             value: '14',
             label: '消防用品'
+          },
+          {
+            value: '15',
+            label: '佛经（法宝）'
+          },
+           {
+            value: '16',
+            label: '其他书籍'
           }
 
         ],
         labelPosition: 'right',
+        activeIndex:undefined,
         goods: {
           goods_attr: '',
           goods_type: '',
@@ -1055,19 +1387,32 @@
 
            var arr = []
 
-            var nowDate = new Date();
+            var now = new Date();
+            var nowDate = (now.getFullYear())+"/"+(now.getMonth()+1)+"/"+(now.getDate());
            for(var i in res.res){
-             if(nowDate < res.res[i].goods_medicines_limit){
-
-
+             if(res.res[i].goods_medicines_limit){
+            console.log(nowDate)  
+             // console.log(res.res[i].goods_medicines_limit);
+              var limit = res.res[i].goods_medicines_limit
+               limit = limit.substring(0,10);
+             limit = limit.replace(/-/g,'/');
+             var limits = new Date(limit).getTime();
+           // console.log(limit)
+          // console.log(nowDate<limit)
+          if(nowDate >limit){
+         
+            
                     arr.push(res.res[i]);
 
-
+                
              }
-
+                 
 
            }
-           console.log(arr)
+         //  console.log(arr)
+           this.limitData = arr
+             }
+              
 
 
 
@@ -1195,13 +1540,17 @@
           'goods_medicines_data_of_manufacture': this.goods.goods_medicines_data_of_manufacture,
           'goods_medicines_quality_guarantee_period': this.goods.goods_medicines_quality_guarantee_period,
           'goods_medicines_limit': new Date(this.goods.goods_medicines_limit),
+          'tag':''
         }
         axios.post('/api/lists/lists',data).then((result) => {
           let res = result.data;
           if (res.status == 0) {
-            console.log('数据添加成功')
-            console.log(res)
-            this.resetForm('goods')
+            this.$message({
+              type: "success",
+              message: "数据添加成功!"
+            });            this.resetForm('goods')
+            this.editFormVisible = false;
+            this.show4 = false;
           } else {
             console.log('数据添加失败')
           }
@@ -1223,6 +1572,138 @@
       },
       handleChange(value) {
         console.log(value);
+      },
+      filterHandler(value, row) {
+       // const prop
+        if(row.goods_medicines_attr){
+          return row.goods_medicines_attr === value;
+        }
+        if(row.goods_position){
+          return row.goods_position === value
+        }
+                //return row.goods_medicines_attr === value;
+      },
+      filterHandler1(value, row) {
+        //const prop
+                return row.goods_position === value;
+      },
+      filterHandler2(value, row) {
+        //const prop
+                return row.goods_attr === value;
+      },
+      filterTag(value, row) {
+        return row.tag === value;
+      },
+       // 编辑
+      editGroup(index,id) {
+      console.log("jinlaile")
+      console.log(index)
+      console.log(id.row);
+      this.goods = id.row;
+      this._id = id.row._id;
+      this.activeIndex = index;
+      //这样就不会共用同一个对象 避免对话框内容改变的时候遮罩下面跟着改变
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, tableData.row);
+    
+    },
+    //点击关闭dialog
+handleClose(done) {
+    /*done();
+    location.reload();*/
+    this.editFormVisible = false;
+},
+
+//点击取消
+handleCancel(formName) {
+    this.editFormVisible = false;
+},
+
+//点击更新
+handleUpdate(forName) { 
+     var a = this.goods.goods_admin;
+           var arr = []
+          for(var i in a){
+          arr.push(this.data[a[i]-1].label)
+        }
+
+        this.goods.goods_admin = arr;
+         this.goods.goods_sn = this.goods.goods_attr + "-" + this.goods.goods_type + "-" + this.goods.goods_position + "-" + this.goods.goods_sn;
+        let data = {
+          'goods_attr': this.goods.goods_attr+"("+this.attrs[parseInt(this.goods.goods_attr)-1].label+")",
+
+          'goods_type': this.goods.goods_type+"("+this.types[parseInt(this.goods.goods_type)-1].label+")",
+
+          'goods_position':this.goods.goods_position+"("+this.positions[parseInt(this.goods.goods_position)-1].label+")",
+
+          'goods_sn': this.goods.goods_sn,
+          'goods_name': this.goods.goods_name,
+          'goods_number': this.goods.goods_number,
+          'goods_price': this.goods.goods_price,
+          'goods_keywords': this.goods.goods_keywords,
+          'goods_desc': this.goods.goods_desc,
+          'goods_img': this.goods.goods_img,
+          'goods_is_real': this.goods.goods_is_real,
+          'goods_add_time': this.goods.goods_add_time,
+          'goods_is_delete': this.goods.goods_is_delete,
+          'goods_is_new': this.goods.goods_is_new,
+          'goods_is_hot': this.goods.goods_is_hot,
+          'goods_admin': this.goods.goods_admin,
+          'goods_people': this.goods.goods_people,
+          'goods_medicines_producer': this.goods.goods_medicines_producer,
+          'goods_medicines_attr': this.goods.goods_medicines_attr,
+          'goods_medicines_norms': this.goods.goods_medicines_norms,
+          'goods_medicines_use': this.goods.goods_medicines_use,
+          'goods_medicines_data_of_manufacture': this.goods.goods_medicines_data_of_manufacture,
+          'goods_medicines_quality_guarantee_period': this.goods.goods_medicines_quality_guarantee_period,
+          'goods_medicines_limit': new Date(this.goods.goods_medicines_limit),
+          '_id':this._id,
+          'tag':this.tag
+        }
+        axios.post('/api/lists/UpdateLists',data).then((result) => {
+          let res = result.data;
+          if (res.status == 700) {
+            console.log('原数据更新成功')
+            console.log(res)
+             this.$message({
+              type: "success",
+              message: "原数据更新成功!"
+            });
+                  this.editFormVisible = false;
+          } else {
+            console.log('数据添加失败')
+          }
+        })
+        console.log(data);
+    this.editFormVisible = false;
+},
+     // 删除
+    deleteGroup(index, id) {
+      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+           // console.log(id.$index)
+           // console.log(id.row._id)
+            
+            let data = {"_id":id.row._id};
+            axios.post('/api/lists/DeteleLists',data).then((result)=>{
+              let res = result.data;
+              this.tableData.splice(index, 1);
+              })
+            
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+          })
+      
+        .catch(() => {});
+      },
+      checkLimitGoods(){
+        this.tableData = this.limitData;
       },
       backTop() {
         const that = this
